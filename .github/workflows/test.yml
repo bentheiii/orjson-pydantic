@@ -34,7 +34,7 @@ jobs:
       - run: maturin build --no-sdist --release --strip --manylinux off -i $pythonLocation"python.exe"
         if: ${{ runner.os == 'Windows' }}
       - run: pip install orjson-pydantic --no-index -f target/wheels
-      - run: pytest tests/
+      - run: pytest test/
 
   fmt:
     name: Rustfmt
