@@ -124,8 +124,7 @@ pub fn init_typerefs() {
         DICT_STR = PyUnicode_InternFromString("__dict__\0".as_ptr() as *const c_char);
         DATACLASS_FIELDS_STR =
             PyUnicode_InternFromString("__dataclass_fields__\0".as_ptr() as *const c_char);
-        PYDANTIC_FIELDS_STR =
-            PyUnicode_InternFromString("__fields__\0".as_ptr() as *const c_char);
+        PYDANTIC_FIELDS_STR = PyUnicode_InternFromString("__fields__\0".as_ptr() as *const c_char);
         SLOTS_STR = PyUnicode_InternFromString("__slots__\0".as_ptr() as *const c_char);
         FIELD_TYPE_STR = PyUnicode_InternFromString("_field_type\0".as_ptr() as *const c_char);
         ARRAY_STRUCT_STR =
