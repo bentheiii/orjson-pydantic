@@ -180,6 +180,7 @@ pub unsafe extern "C" fn PyInit_orjson() -> *mut PyObject {
         "OPT_PASSTHROUGH_SUBCLASS\0",
         "OPT_SERIALIZE_DATACLASS\0",
         "OPT_SERIALIZE_NUMPY\0",
+        "OPT_SERIALIZE_PYDANTIC\0",
         "OPT_SERIALIZE_UUID\0",
         "OPT_SORT_KEYS\0",
         "OPT_STRICT_INTEGER\0",
