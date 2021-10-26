@@ -1,6 +1,6 @@
 [project]
-name = "orjson"
-repository = "https://github.com/ijl/orjson"
+name = "orjson-pydantic"
+repository = "https://github.com/aviramha/orjson-pydantic"
 
 [build-system]
 build-backend = "maturin"

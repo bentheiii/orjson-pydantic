@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-import unittest
-import orjson
-from typing import Optional
-
-from pydantic import BaseModel
-
-=======
 import abc
 import unittest
 from typing import Optional, Sequence, Tuple, Union
