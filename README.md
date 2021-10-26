@@ -81,7 +81,7 @@ To install a wheel from PyPI:
 
 ```sh
 pip install --upgrade "pip>=20.3" # manylinux_x_y, universal2 wheel support
-pip install --upgrade orjson
+pip install --upgrade orjson-pydantic
 ```
 
 To build a wheel, see [packaging](https://github.com/ijl/orjson#packaging).
