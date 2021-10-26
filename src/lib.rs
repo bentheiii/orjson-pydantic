@@ -163,7 +163,7 @@ pub unsafe extern "C" fn PyInit_orjson() -> *mut PyObject {
     };
 
     // maturin>=0.11.0 creates a python package that imports *, hiding dunder by default
-    let all: [&str; 20] = [
+    let all: [&str; 21] = [
         "__all__\0",
         "__version__\0",
         "dumps\0",
