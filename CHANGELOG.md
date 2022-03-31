@@ -1,5 +1,38 @@
 # Changelog
 
+## 3.6.7 - 2022-02-14
+
+### Changed
+
+- Improve performance of deserializing almost-empty documents.
+- Publish arm7l `manylinux_2_17` wheels to PyPI.
+- Publish amd4 `musllinux_1_1` wheels to PyPI.
+
+### Fixed
+
+- Fix build requiring `python` on `PATH`.
+
+## 3.6.6 - 2022-01-21
+
+### Changed
+
+- Improve performance of serializing `datetime.datetime` using `tzinfo` that
+are `zoneinfo.ZoneInfo`.
+
+### Fixed
+
+- Fix invalid indexing in line and column number reporting in
+`JSONDecodeError`.
+- Fix `orjson.OPT_STRICT_INTEGER` not raising an error on
+values exceeding a 64-bit integer maximum.
+
+## 3.6.5 - 2021-12-05
+
+### Fixed
+
+- Fix build on macOS aarch64 CPython 3.10.
+- Fix build issue on 32-bit.
+
 ## 3.6.4 - 2021-10-01
 
 ### Fixed

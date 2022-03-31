@@ -186,7 +186,13 @@ impl<'p> Serialize for PyObjectSerializer {
         match self.obtype {
             ObType::Str => StrSerializer::new(self.ptr).serialize(serializer),
             ObType::StrSubclass => StrSubclassSerializer::new(self.ptr).serialize(serializer),
-            ObType::Int => IntSerializer::new(self.ptr, self.opts).serialize(serializer),
+            ObType::Int => {
+                if unlikely!(self.opts & STRICT_INTEGER != 0) {
+                    Int53Serializer::new(self.ptr).serialize(serializer)
+                } else {
+                    IntSerializer::new(self.ptr).serialize(serializer)
+                }
+            }
             ObType::None => serializer.serialize_unit(),
             ObType::Float => serializer.serialize_f64(ffi!(PyFloat_AS_DOUBLE(self.ptr))),
             ObType::Bool => serializer.serialize_bool(unsafe { self.ptr == TRUE }),
@@ -194,12 +200,12 @@ impl<'p> Serialize for PyObjectSerializer {
             ObType::Date => Date::new(self.ptr).serialize(serializer),
             ObType::Time => match Time::new(self.ptr, self.opts) {
                 Ok(val) => val.serialize(serializer),
-                Err(TimeError::HasTimezone) => err!(TIME_HAS_TZINFO),
+                Err(TimeError::HasTimezone) => err!(SerializeError::TimeHasTzinfo),
             },
             ObType::Uuid => UUID::new(self.ptr).serialize(serializer),
             ObType::Dict => {
                 if unlikely!(self.recursion == RECURSION_LIMIT) {
-                    err!(RECURSION_LIMIT_REACHED)
+                    err!(SerializeError::RecursionLimit)
                 }
                 if unlikely!(unsafe { PyDict_GET_SIZE(self.ptr) } == 0) {
                     serializer.serialize_map(Some(0)).unwrap().end()
@@ -234,7 +240,7 @@ impl<'p> Serialize for PyObjectSerializer {
             }
             ObType::List => {
                 if unlikely!(self.recursion == RECURSION_LIMIT) {
-                    err!(RECURSION_LIMIT_REACHED)
+                    err!(SerializeError::RecursionLimit)
                 }
                 if unlikely!(ffi!(PyList_GET_SIZE(self.ptr)) == 0) {
                     serializer.serialize_seq(Some(0)).unwrap().end()
@@ -259,7 +265,7 @@ impl<'p> Serialize for PyObjectSerializer {
             .serialize(serializer),
             ObType::Dataclass => {
                 if unlikely!(self.recursion == RECURSION_LIMIT) {
-                    err!(RECURSION_LIMIT_REACHED)
+                    err!(SerializeError::RecursionLimit)
                 }
                 let dict = ffi!(PyObject_GetAttr(self.ptr, DICT_STR));
                 let ob_type = ob_type!(self.ptr);
@@ -289,11 +295,11 @@ impl<'p> Serialize for PyObjectSerializer {
             }
             ObType::Pydantic => {
                 if unlikely!(self.recursion == RECURSION_LIMIT) {
-                    err!(RECURSION_LIMIT_REACHED)
+                    err!(SerializeError::RecursionLimit)
                 }
                 let dict = ffi!(PyObject_GetAttr(self.ptr, DICT_STR));
                 if unlikely!(dict.is_null()) {
-                    err!(PYDANTIC_MUST_HAVE_DICT)
+                    err!(SerializeError::PydanticMustHaveDict)
                 } else {
                     ffi!(Py_DECREF(dict));
                     DataclassFastSerializer::new(
@@ -320,7 +326,7 @@ impl<'p> Serialize for PyObjectSerializer {
             }
             ObType::NumpyArray => match NumpyArray::new(self.ptr, self.opts) {
                 Ok(val) => val.serialize(serializer),
-                Err(PyArrayError::Malformed) => err!("numpy array is malformed"),
+                Err(PyArrayError::Malformed) => err!(SerializeError::NumpyMalformed),
                 Err(PyArrayError::NotContiguous) | Err(PyArrayError::UnsupportedDataType)
                     if self.default.is_some() =>
                 {
@@ -334,10 +340,10 @@ impl<'p> Serialize for PyObjectSerializer {
                     .serialize(serializer)
                 }
                 Err(PyArrayError::NotContiguous) => {
-                    err!("numpy array is not C contiguous; use ndarray.tolist() in default")
+                    err!(SerializeError::NumpyNotCContiguous)
                 }
                 Err(PyArrayError::UnsupportedDataType) => {
-                    err!("unsupported datatype in numpy array")
+                    err!(SerializeError::NumpyUnsupportedDatatype)
                 }
             },
             ObType::NumpyScalar => NumpyScalar::new(self.ptr, self.opts).serialize(serializer),

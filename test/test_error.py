@@ -3,9 +3,8 @@
 import json
 import unittest
 
-import pytest
-
 import orjson
+import pytest
 
 from .util import read_fixture_str
 

@@ -7,20 +7,22 @@ import random
 import unittest
 from typing import List
 
-import pytz
+try:
+    import pytz
+except ImportError:
+    pytz = None  # type: ignore
 
 try:
     import psutil
 except ImportError:
-    psutil = None
-import pytest
-
+    psutil = None  # type: ignore
 import orjson
+import pytest
 
 try:
     import numpy
 except ImportError:
-    numpy = None
+    numpy = None  # type: ignore
 
 FIXTURE = '{"a":[81891289, 8919812.190129012], "b": false, "c": null, "d": "東京"}'
 
@@ -198,7 +200,8 @@ class MemoryTests(unittest.TestCase):
         self.assertTrue(proc.memory_info().rss <= mem + MAX_INCREASE)
 
     @pytest.mark.skipif(
-        psutil is None, reason="psutil install broken on win, python3.9, Azure"
+        psutil is None or pytz is None,
+        reason="psutil install broken on win, python3.9, Azure",
     )
     def test_memory_dumps_pytz_tzinfo(self):
         """

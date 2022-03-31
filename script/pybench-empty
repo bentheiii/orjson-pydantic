@@ -9,4 +9,6 @@ pytest \
     --benchmark-disable-gc \
     --benchmark-autosave \
     --benchmark-save-data \
-    "bench/benchmark_$1.py"
+    --random-order \
+    -k orjson \
+    "bench/benchmark_empty.py"

@@ -33,11 +33,11 @@ support for 64-bit
 * does not provide `load()` or `dump()` functions for reading from/writing to
 file-like objects
 
-orjson supports CPython 3.7, 3.8, 3.9, and 3.10. It distributes x86_64/amd64
-and aarch64/armv8 wheels for Linux and macOS. It distributes x86_64/amd64 wheels
-for Windows. orjson does not support PyPy. Releases follow semantic
-versioning and serializing a new object type without an opt-in flag is
-considered a breaking change.
+orjson supports CPython 3.7, 3.8, 3.9, and 3.10. It distributes x86_64/amd64,
+aarch64/armv8, and arm7 wheels for Linux, amd64 and aarch64 wheels for macOS,
+and amd64 wheels for Windows. orjson does not support PyPy. Releases
+follow semantic versioning and serializing a new object type
+without an opt-in flag is considered a breaking change.
 
 orjson is licensed under both the Apache 2.0 and MIT licenses. The
 repository and issue tracker is
@@ -559,13 +559,13 @@ Serialize a UTC timezone on `datetime.datetime` instances as `Z` instead
 of `+00:00`.
 
 ```python
->>> import orjson, datetime
+>>> import orjson, datetime, zoneinfo
 >>> orjson.dumps(
-        datetime.datetime(1970, 1, 1, 0, 0, 0, tzinfo=datetime.timezone.utc),
+        datetime.datetime(1970, 1, 1, 0, 0, 0, tzinfo=zoneinfo.ZoneInfo("UTC")),
     )
 b'"1970-01-01T00:00:00+00:00"'
 >>> orjson.dumps(
-        datetime.datetime(1970, 1, 1, 0, 0, 0, tzinfo=datetime.timezone.utc),
+        datetime.datetime(1970, 1, 1, 0, 0, 0, tzinfo=zoneinfo.ZoneInfo("UTC")),
         option=orjson.OPT_UTC_Z
     )
 b'"1970-01-01T00:00:00Z"'
@@ -657,21 +657,21 @@ e.g., `field(metadata={"json_serialize": False})`, if use cases are clear.
 
 orjson serializes `datetime.datetime` objects to
 [RFC 3339](https://tools.ietf.org/html/rfc3339) format,
-e.g., "1970-01-01T00:00:00+00:00". This is a subset of ISO 8601 and
+e.g., "1970-01-01T00:00:00+00:00". This is a subset of ISO 8601 and is
 compatible with `isoformat()` in the standard library.
 
 ```python
 >>> import orjson, datetime, zoneinfo
 >>> orjson.dumps(
-    datetime.datetime(2018, 12, 1, 2, 3, 4, 9, tzinfo=zoneinfo.ZoneInfo('Australia/Adelaide'))
+    datetime.datetime(2018, 12, 1, 2, 3, 4, 9, tzinfo=zoneinfo.ZoneInfo("Australia/Adelaide"))
 )
 b'"2018-12-01T02:03:04.000009+10:30"'
 >>> orjson.dumps(
-    datetime.datetime.fromtimestamp(4123518902).replace(tzinfo=datetime.timezone.utc)
+    datetime.datetime(2100, 9, 1, 21, 55, 2).replace(tzinfo=zoneinfo.ZoneInfo("UTC"))
 )
 b'"2100-09-01T21:55:02+00:00"'
 >>> orjson.dumps(
-    datetime.datetime.fromtimestamp(4123518902)
+    datetime.datetime(2100, 9, 1, 21, 55, 2)
 )
 b'"2100-09-01T21:55:02"'
 ```
@@ -680,6 +680,8 @@ b'"2100-09-01T21:55:02"'
 `datetime.timezone.utc`, a timezone instance from the python3.9+ `zoneinfo`
 module, or a timezone instance from the third-party `pendulum`, `pytz`, or
 `dateutil`/`arrow` libraries.
+
+It is fastest to use the standard library's `zoneinfo.ZoneInfo` for timezones.
 
 `datetime.time` objects must not have a `tzinfo`.
 
@@ -1181,12 +1183,13 @@ maturin build --no-sdist --release --strip --cargo-extra-args="--features=unstab
 
 To build on the stable channel, do not specify `--features=unstable-simd`.
 
-The project's own CI tests against `nightly-2021-10-01` and stable 1.54. It
+The project's own CI tests against `nightly-2022-02-13` and stable 1.54. It
 is prudent to pin the nightly version because that channel can introduce
 breaking changes.
 
-orjson is tested for amd64 and aarch64 on Linux and amd64 on macOS and
-Windows. It may not work on 32-bit targets.
+orjson is tested for amd64, aarch64, and arm7 on Linux. It is tested for
+amd64 on macOS and ships an aarch64 wheel also supporting aarch64. For Windows
+is is tested on amd64.
 
 There are no runtime dependencies other than libc.
 
@@ -1197,5 +1200,5 @@ tests should be run as part of the build. It can be run with
 
 ## License
 
-orjson was written by ijl <<ijl@mailbox.org>>, copyright 2018 - 2021, licensed
+orjson was written by ijl <<ijl@mailbox.org>>, copyright 2018 - 2022, licensed
 under both the Apache 2 and MIT licenses.
