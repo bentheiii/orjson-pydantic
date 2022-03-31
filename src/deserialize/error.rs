@@ -23,6 +23,7 @@ impl<'a> DeserializeError<'a> {
 
     /// Return position of the error in the deserialized data
     #[cold]
+    #[cfg_attr(feature = "unstable-simd", optimize(size))]
     pub fn pos(&self) -> usize {
         if self.line == 0 {
             return 1;
@@ -40,7 +41,13 @@ impl<'a> DeserializeError<'a> {
                     //       directly use the `column` field
                     if self.column == 0 { return 0; }
 
-                    let chars_count = s[..self.column - 1].chars().count();
+                    // Find a column we can safely slice on
+                    let mut column = self.column - 1;
+                    while column > 0 && !s.is_char_boundary(column) {
+                        column -= 1;
+                    }
+
+                    let chars_count = s[..column].chars().count();
                     if chars_count == s.chars().count() - 1 {
                         chars_count + 1
                     } else {

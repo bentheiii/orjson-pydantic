@@ -3,9 +3,8 @@ import unittest
 from typing import Optional, Sequence, Tuple, Union
 
 import numpy as np
-from pydantic import BaseModel
-
 import orjson
+from pydantic import BaseModel
 
 
 class Model1(BaseModel):

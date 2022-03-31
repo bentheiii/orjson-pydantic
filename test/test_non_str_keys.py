@@ -5,15 +5,18 @@ import datetime
 import unittest
 import uuid
 
-import pytest
-import pytz
-
 import orjson
+import pytest
+
+try:
+    import pytz
+except ImportError:
+    pytz = None  # type: ignore
 
 try:
     import numpy
 except ImportError:
-    numpy = None
+    numpy = None  # type: ignore
 
 
 class SubStr(str):
@@ -227,6 +230,7 @@ class NonStrKeyTests(unittest.TestCase):
             b'{"1970-01-03":3,"1970-01-05":2,"other":1}',
         )
 
+    @pytest.mark.skipif(pytz is None, reason="pytz optional")
     def test_dict_keys_time_err(self):
         """
         OPT_NON_STR_KEYS propagates errors in types

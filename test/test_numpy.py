@@ -2,14 +2,13 @@
 
 import unittest
 
-import pytest
-
 import orjson
+import pytest
 
 try:
     import numpy
 except ImportError:
-    numpy = None
+    numpy = None  # type: ignore
 
 
 def numpy_default(obj):
