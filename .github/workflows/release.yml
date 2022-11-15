@@ -85,7 +85,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install -U pip wheel twine maturin
+      - run: python -m pip install -U pip wheel twine maturin
       - run: pip install -r requirements.txt
       - run: maturin build --release --strip --manylinux off -i $pythonLocation/python --target x86_64-apple-darwin
       - run: pip install orjson-pydantic --no-index -f target/wheels
@@ -108,7 +108,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
-      - run: pip install -U pip wheel twine maturin
+      - run: python -m pip install -U pip wheel twine maturin
       - run: pip install -r requirements.txt
       - run: maturin sdist
       - run: twine upload --non-interactive --skip-existing target/wheels/*
