@@ -45,7 +45,7 @@ macro_rules! opt {
 #[no_mangle]
 #[cold]
 #[cfg_attr(feature = "unstable-simd", optimize(size))]
-pub unsafe extern "C" fn PyInit_orjson() -> *mut PyObject {
+pub unsafe extern "C" fn PyInit_orjson_pydantic() -> *mut PyObject {
     let init = PyModuleDef {
         m_base: PyModuleDef_HEAD_INIT,
         m_name: "orjson_pydantic\0".as_ptr() as *const c_char,

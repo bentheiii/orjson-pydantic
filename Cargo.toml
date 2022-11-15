@@ -25,7 +25,7 @@ include = [
 ]
 
 [lib]
-name = "orjson"
+name = "orjson_pydantic"
 crate-type = ["cdylib"]
 
 [package.metadata.maturin]

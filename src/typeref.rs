@@ -160,7 +160,7 @@ unsafe fn look_up_json_exc() -> *mut PyObject {
     let ptr = PyMapping_GetItemString(module_dict, "JSONDecodeError\0".as_ptr() as *const c_char)
         as *mut PyObject;
     let res = pyo3::ffi::PyErr_NewException(
-        "orjson.JSONDecodeError\0".as_ptr() as *const c_char,
+        "orjson_pydantic.JSONDecodeError\0".as_ptr() as *const c_char,
         ptr,
         std::ptr::null_mut(),
     );

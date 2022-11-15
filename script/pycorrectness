@@ -7,7 +7,7 @@ import lzma
 import os
 from pathlib import Path
 
-import orjson
+import orjson_pydantic
 from tabulate import tabulate
 
 dirname = os.path.join(os.path.dirname(__file__), "data")
@@ -51,10 +51,10 @@ def read_fixture(filename, subdir=None):
 def test_passed(library, fixture):
     passed = []
     try:
-        passed.append(library.loads(fixture) == orjson.loads(fixture))
+        passed.append(library.loads(fixture) == orjson_pydantic.loads(fixture))
         passed.append(
             library.loads(fixture.decode("utf-8"))
-            == orjson.loads(fixture.decode("utf-8"))
+            == orjson_pydantic.loads(fixture.decode("utf-8"))
         )
     except Exception:
         passed.append(False)

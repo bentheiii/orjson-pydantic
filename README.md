@@ -91,16 +91,16 @@ To build a wheel, see [packaging](https://github.com/ijl/orjson#packaging).
 This is an example of serializing, with options specified, and deserializing:
 
 ```python
->>> import orjson, datetime, numpy
+>>> import orjson_pydantic, datetime, numpy
 >>> data = {
     "type": "job",
     "created_at": datetime.datetime(1970, 1, 1),
     "status": "🆗",
     "payload": numpy.array([[1, 2], [3, 4]]),
 }
->>> orjson.dumps(data, option=orjson.OPT_NAIVE_UTC | orjson.OPT_SERIALIZE_NUMPY)
+>>> orjson_pydantic.dumps(data, option=orjson_pydantic.OPT_NAIVE_UTC | orjson_pydantic.OPT_SERIALIZE_NUMPY)
 b'{"type":"job","created_at":"1970-01-01T00:00:00+00:00","status":"\xf0\x9f\x86\x97","payload":[[1,2],[3,4]]}'
->>> orjson.loads(_)
+>>> orjson_pydantic.loads(_)
 {'type': 'job', 'created_at': '1970-01-01T00:00:00+00:00', 'status': '🆗', 'payload': [[1, 2], [3, 4]]}
 ```
 
@@ -109,20 +109,20 @@ b'{"type":"job","created_at":"1970-01-01T00:00:00+00:00","status":"\xf0\x9f\x86\
 orjson version 3 serializes more types than version 2. Subclasses of `str`,
 `int`, `dict`, and `list` are now serialized. This is faster and more similar
 to the standard library. It can be disabled with
-`orjson.OPT_PASSTHROUGH_SUBCLASS`.`dataclasses.dataclass` instances
+`orjson_pydantic.OPT_PASSTHROUGH_SUBCLASS`.`dataclasses.dataclass` instances
 are now serialized by default and cannot be customized in a
-`default` function unless `option=orjson.OPT_PASSTHROUGH_DATACLASS` is
+`default` function unless `option=orjson_pydantic.OPT_PASSTHROUGH_DATACLASS` is
 specified. `uuid.UUID` instances are serialized by default.
 For any type that is now serialized,
 implementations in a `default` function and options enabling them can be
 removed but do not need to be. There was no change in deserialization.
 
 To migrate from the standard library, the largest difference is that
-`orjson.dumps` returns `bytes` and `json.dumps` returns a `str`. Users with
+`orjson_pydantic.dumps` returns `bytes` and `json.dumps` returns a `str`. Users with
 `dict` objects using non-`str` keys should specify
-`option=orjson.OPT_NON_STR_KEYS`. `sort_keys` is replaced by
-`option=orjson.OPT_SORT_KEYS`. `indent` is replaced by
-`option=orjson.OPT_INDENT_2` and other levels of indentation are not
+`option=orjson_pydantic.OPT_NON_STR_KEYS`. `sort_keys` is replaced by
+`option=orjson_pydantic.OPT_SORT_KEYS`. `indent` is replaced by
+`option=orjson_pydantic.OPT_INDENT_2` and other levels of indentation are not
 supported.
 
 ### Serialize
@@ -145,7 +145,7 @@ It natively serializes
 serializes subclasses of `str`, `int`, `dict`, `list`,
 `dataclasses.dataclass`, and `enum.Enum`. It does not serialize subclasses
 of `tuple` to avoid serializing `namedtuple` objects as arrays. To avoid
-serializing subclasses, specify the option `orjson.OPT_PASSTHROUGH_SUBCLASS`.
+serializing subclasses, specify the option `orjson_pydantic.OPT_PASSTHROUGH_SUBCLASS`.
 
 The output is a `bytes` object containing UTF-8.
 
@@ -183,19 +183,19 @@ lambda, or callable class instance. To specify that a type was not
 handled by `default`, raise an exception such as `TypeError`.
 
 ```python
->>> import orjson, decimal
+>>> import orjson_pydantic, decimal
 >>>
 def default(obj):
     if isinstance(obj, decimal.Decimal):
         return str(obj)
     raise TypeError
 
->>> orjson.dumps(decimal.Decimal("0.0842389659712649442845"))
+>>> orjson_pydantic.dumps(decimal.Decimal("0.0842389659712649442845"))
 JSONEncodeError: Type is not JSON serializable: decimal.Decimal
->>> orjson.dumps(decimal.Decimal("0.0842389659712649442845"), default=default)
+>>> orjson_pydantic.dumps(decimal.Decimal("0.0842389659712649442845"), default=default)
 b'"0.0842389659712649442845"'
->>> orjson.dumps({1, 2}, default=default)
-orjson.JSONEncodeError: Type is not JSON serializable: set
+>>> orjson_pydantic.dumps({1, 2}, default=default)
+orjson_pydantic.JSONEncodeError: Type is not JSON serializable: set
 ```
 
 The `default` callable may return an object that itself
@@ -207,13 +207,13 @@ Python otherwise implicitly returns `None`, which appears to the caller
 like a legitimate value and is serialized:
 
 ```python
->>> import orjson, json, rapidjson
+>>> import orjson_pydantic, json, rapidjson
 >>>
 def default(obj):
     if isinstance(obj, decimal.Decimal):
         return str(obj)
 
->>> orjson.dumps({"set":{1, 2}}, default=default)
+>>> orjson_pydantic.dumps({"set":{1, 2}}, default=default)
 b'{"set":null}'
 >>> json.dumps({"set":{1, 2}}, default=default)
 '{"set":null}'
@@ -225,7 +225,7 @@ b'{"set":null}'
 
 To modify how data is serialized, specify `option`. Each `option` is an integer
 constant in `orjson`. To specify multiple options, mask them together, e.g.,
-`option=orjson.OPT_STRICT_INTEGER | orjson.OPT_NAIVE_UTC`.
+`option=orjson_pydantic.OPT_STRICT_INTEGER | orjson_pydantic.OPT_NAIVE_UTC`.
 
 ##### OPT_APPEND_NEWLINE
 
@@ -234,10 +234,10 @@ pattern of `dumps(...) + "\n"`. `bytes` objects are immutable and this
 pattern copies the original contents.
 
 ```python
->>> import orjson
->>> orjson.dumps([])
+>>> import orjson_pydantic
+>>> orjson_pydantic.dumps([])
 b"[]"
->>> orjson.dumps([], option=orjson.OPT_APPEND_NEWLINE)
+>>> orjson_pydantic.dumps([], option=orjson_pydantic.OPT_APPEND_NEWLINE)
 b"[]\n"
 ```
 
@@ -250,12 +250,12 @@ much less of a slowdown to pretty print than the standard library does. This
 option is compatible with all other options.
 
 ```python
->>> import orjson
->>> orjson.dumps({"a": "b", "c": {"d": True}, "e": [1, 2]})
+>>> import orjson_pydantic
+>>> orjson_pydantic.dumps({"a": "b", "c": {"d": True}, "e": [1, 2]})
 b'{"a":"b","c":{"d":true},"e":[1,2]}'
->>> orjson.dumps(
+>>> orjson_pydantic.dumps(
     {"a": "b", "c": {"d": True}, "e": [1, 2]},
-    option=orjson.OPT_INDENT_2
+    option=orjson_pydantic.OPT_INDENT_2
 )
 b'{\n  "a": "b",\n  "c": {\n    "d": true\n  },\n  "e": [\n    1,\n    2\n  ]\n}'
 ```
@@ -307,14 +307,14 @@ Serialize `datetime.datetime` objects without a `tzinfo` as UTC. This
 has no effect on `datetime.datetime` objects that have `tzinfo` set.
 
 ```python
->>> import orjson, datetime
->>> orjson.dumps(
+>>> import orjson_pydantic, datetime
+>>> orjson_pydantic.dumps(
         datetime.datetime(1970, 1, 1, 0, 0, 0),
     )
 b'"1970-01-01T00:00:00"'
->>> orjson.dumps(
+>>> orjson_pydantic.dumps(
         datetime.datetime(1970, 1, 1, 0, 0, 0),
-        option=orjson.OPT_NAIVE_UTC,
+        option=orjson_pydantic.OPT_NAIVE_UTC,
     )
 b'"1970-01-01T00:00:00+00:00"'
 ```
@@ -329,15 +329,15 @@ default. orjson benchmarks as being faster at serializing non-`str` keys
 than other libraries. This option is slower for `str` keys than the default.
 
 ```python
->>> import orjson, datetime, uuid
->>> orjson.dumps(
+>>> import orjson_pydantic, datetime, uuid
+>>> orjson_pydantic.dumps(
         {uuid.UUID("7202d115-7ff3-4c81-a7c1-2a1f067b1ece"): [1, 2, 3]},
-        option=orjson.OPT_NON_STR_KEYS,
+        option=orjson_pydantic.OPT_NON_STR_KEYS,
     )
 b'{"7202d115-7ff3-4c81-a7c1-2a1f067b1ece":[1,2,3]}'
->>> orjson.dumps(
+>>> orjson_pydantic.dumps(
         {datetime.datetime(1970, 1, 1, 0, 0, 0): [1, 2, 3]},
-        option=orjson.OPT_NON_STR_KEYS | orjson.OPT_NAIVE_UTC,
+        option=orjson_pydantic.OPT_NON_STR_KEYS | orjson_pydantic.OPT_NAIVE_UTC,
     )
 b'{"1970-01-01T00:00:00+00:00":[1,2,3]}'
 ```
@@ -353,14 +353,14 @@ objects may serialize to the same `str` as an existing key, e.g.,
 serialized last and a JSON deserializer will presumably take the last
 occurrence of a key (in the above, `false`). The first value will be lost.
 
-This option is compatible with `orjson.OPT_SORT_KEYS`. If sorting is used,
+This option is compatible with `orjson_pydantic.OPT_SORT_KEYS`. If sorting is used,
 note the sort is unstable and will be unpredictable for duplicate keys.
 
 ```python
->>> import orjson, datetime
->>> orjson.dumps(
+>>> import orjson_pydantic, datetime
+>>> orjson_pydantic.dumps(
     {"other": 1, datetime.date(1970, 1, 5): 2, datetime.date(1970, 1, 3): 3},
-    option=orjson.OPT_NON_STR_KEYS | orjson.OPT_SORT_KEYS
+    option=orjson_pydantic.OPT_NON_STR_KEYS | orjson_pydantic.OPT_SORT_KEYS
 )
 b'{"1970-01-03":3,"1970-01-05":2,"other":1}'
 ```
@@ -369,7 +369,7 @@ This measures serializing 589KiB of JSON comprising a `list` of 100 `dict`
 in which each `dict` has both 365 randomly-sorted `int` keys representing epoch
 timestamps as well as one `str` key and the value for each key is a
 single integer. In "str keys", the keys were converted to `str` before
-serialization, and orjson still specifes `option=orjson.OPT_NON_STR_KEYS`
+serialization, and orjson still specifes `option=orjson_pydantic.OPT_NON_STR_KEYS`
 (which is always somewhat slower).
 
 | Library    |   str keys (ms) | int keys (ms)   | int keys sorted (ms)   |
@@ -391,14 +391,14 @@ Do not serialize the `microsecond` field on `datetime.datetime` and
 `datetime.time` instances.
 
 ```python
->>> import orjson, datetime
->>> orjson.dumps(
+>>> import orjson_pydantic, datetime
+>>> orjson_pydantic.dumps(
         datetime.datetime(1970, 1, 1, 0, 0, 0, 1),
     )
 b'"1970-01-01T00:00:00.000001"'
->>> orjson.dumps(
+>>> orjson_pydantic.dumps(
         datetime.datetime(1970, 1, 1, 0, 0, 0, 1),
-        option=orjson.OPT_OMIT_MICROSECONDS,
+        option=orjson_pydantic.OPT_OMIT_MICROSECONDS,
     )
 b'"1970-01-01T00:00:00"'
 ```
@@ -410,7 +410,7 @@ customizing their output but is much slower.
 
 
 ```python
->>> import orjson, dataclasses
+>>> import orjson_pydantic, dataclasses
 >>>
 @dataclasses.dataclass
 class User:
@@ -423,13 +423,13 @@ def default(obj):
         return {"id": obj.id, "name": obj.name}
     raise TypeError
 
->>> orjson.dumps(User("3b1", "asd", "zxc"))
+>>> orjson_pydantic.dumps(User("3b1", "asd", "zxc"))
 b'{"id":"3b1","name":"asd","password":"zxc"}'
->>> orjson.dumps(User("3b1", "asd", "zxc"), option=orjson.OPT_PASSTHROUGH_DATACLASS)
+>>> orjson_pydantic.dumps(User("3b1", "asd", "zxc"), option=orjson_pydantic.OPT_PASSTHROUGH_DATACLASS)
 TypeError: Type is not JSON serializable: User
->>> orjson.dumps(
+>>> orjson_pydantic.dumps(
         User("3b1", "asd", "zxc"),
-        option=orjson.OPT_PASSTHROUGH_DATACLASS,
+        option=orjson_pydantic.OPT_PASSTHROUGH_DATACLASS,
         default=default,
     )
 b'{"id":"3b1","name":"asd"}'
@@ -442,20 +442,20 @@ to `default`. This allows serializing datetimes to a custom format, e.g.,
 HTTP dates:
 
 ```python
->>> import orjson, datetime
+>>> import orjson_pydantic, datetime
 >>>
 def default(obj):
     if isinstance(obj, datetime.datetime):
         return obj.strftime("%a, %d %b %Y %H:%M:%S GMT")
     raise TypeError
 
->>> orjson.dumps({"created_at": datetime.datetime(1970, 1, 1)})
+>>> orjson_pydantic.dumps({"created_at": datetime.datetime(1970, 1, 1)})
 b'{"created_at":"1970-01-01T00:00:00"}'
->>> orjson.dumps({"created_at": datetime.datetime(1970, 1, 1)}, option=orjson.OPT_PASSTHROUGH_DATETIME)
+>>> orjson_pydantic.dumps({"created_at": datetime.datetime(1970, 1, 1)}, option=orjson_pydantic.OPT_PASSTHROUGH_DATETIME)
 TypeError: Type is not JSON serializable: datetime.datetime
->>> orjson.dumps(
+>>> orjson_pydantic.dumps(
         {"created_at": datetime.datetime(1970, 1, 1)},
-        option=orjson.OPT_PASSTHROUGH_DATETIME,
+        option=orjson_pydantic.OPT_PASSTHROUGH_DATETIME,
         default=default,
     )
 b'{"created_at":"Thu, 01 Jan 1970 00:00:00 GMT"}'
@@ -468,7 +468,7 @@ This does not affect datetimes in `dict` keys if using OPT_NON_STR_KEYS.
 Passthrough subclasses of builtin types to `default`.
 
 ```python
->>> import orjson
+>>> import orjson_pydantic
 >>>
 class Secret(str):
     pass
@@ -478,11 +478,11 @@ def default(obj):
         return "******"
     raise TypeError
 
->>> orjson.dumps(Secret("zxc"))
+>>> orjson_pydantic.dumps(Secret("zxc"))
 b'"zxc"'
->>> orjson.dumps(Secret("zxc"), option=orjson.OPT_PASSTHROUGH_SUBCLASS)
+>>> orjson_pydantic.dumps(Secret("zxc"), option=orjson_pydantic.OPT_PASSTHROUGH_SUBCLASS)
 TypeError: Type is not JSON serializable: Secret
->>> orjson.dumps(Secret("zxc"), option=orjson.OPT_PASSTHROUGH_SUBCLASS, default=default)
+>>> orjson_pydantic.dumps(Secret("zxc"), option=orjson_pydantic.OPT_PASSTHROUGH_SUBCLASS, default=default)
 b'"******"'
 ```
 
@@ -516,10 +516,10 @@ This can be used to ensure the order is deterministic for hashing or tests.
 It has a substantial performance penalty and is not recommended in general.
 
 ```python
->>> import orjson
->>> orjson.dumps({"b": 1, "c": 2, "a": 3})
+>>> import orjson_pydantic
+>>> orjson_pydantic.dumps({"b": 1, "c": 2, "a": 3})
 b'{"b":1,"c":2,"a":3}'
->>> orjson.dumps({"b": 1, "c": 2, "a": 3}, option=orjson.OPT_SORT_KEYS)
+>>> orjson_pydantic.dumps({"b": 1, "c": 2, "a": 3}, option=orjson_pydantic.OPT_SORT_KEYS)
 b'{"a":3,"b":1,"c":2}'
 ```
 
@@ -538,8 +538,8 @@ The benchmark can be reproduced using the `pysort` script.
 The sorting is not collation/locale-aware:
 
 ```python
->>> import orjson
->>> orjson.dumps({"a": 1, "ä": 2, "A": 3}, option=orjson.OPT_SORT_KEYS)
+>>> import orjson_pydantic
+>>> orjson_pydantic.dumps({"a": 1, "ä": 2, "A": 3}, option=orjson_pydantic.OPT_SORT_KEYS)
 b'{"A":3,"a":1,"\xc3\xa4":2}'
 ```
 
@@ -559,14 +559,14 @@ Serialize a UTC timezone on `datetime.datetime` instances as `Z` instead
 of `+00:00`.
 
 ```python
->>> import orjson, datetime, zoneinfo
->>> orjson.dumps(
+>>> import orjson_pydantic, datetime, zoneinfo
+>>> orjson_pydantic.dumps(
         datetime.datetime(1970, 1, 1, 0, 0, 0, tzinfo=zoneinfo.ZoneInfo("UTC")),
     )
 b'"1970-01-01T00:00:00+00:00"'
->>> orjson.dumps(
+>>> orjson_pydantic.dumps(
         datetime.datetime(1970, 1, 1, 0, 0, 0, tzinfo=zoneinfo.ZoneInfo("UTC")),
-        option=orjson.OPT_UTC_Z
+        option=orjson_pydantic.OPT_UTC_Z
     )
 b'"1970-01-01T00:00:00Z"'
 ```
@@ -644,7 +644,7 @@ class Object:
     name: str
     members: typing.List[Member]
 
->>> orjson.dumps(Object(1, "a", [Member(1, True), Member(2)]))
+>>> orjson_pydantic.dumps(Object(1, "a", [Member(1, True), Member(2)]))
 b'{"id":1,"name":"a","members":[{"id":1,"active":true},{"id":2,"active":false}]}'
 ```
 Users may wish to control how dataclass instances are serialized, e.g.,
@@ -661,16 +661,16 @@ e.g., "1970-01-01T00:00:00+00:00". This is a subset of ISO 8601 and is
 compatible with `isoformat()` in the standard library.
 
 ```python
->>> import orjson, datetime, zoneinfo
->>> orjson.dumps(
+>>> import orjson_pydantic, datetime, zoneinfo
+>>> orjson_pydantic.dumps(
     datetime.datetime(2018, 12, 1, 2, 3, 4, 9, tzinfo=zoneinfo.ZoneInfo("Australia/Adelaide"))
 )
 b'"2018-12-01T02:03:04.000009+10:30"'
->>> orjson.dumps(
+>>> orjson_pydantic.dumps(
     datetime.datetime(2100, 9, 1, 21, 55, 2).replace(tzinfo=zoneinfo.ZoneInfo("UTC"))
 )
 b'"2100-09-01T21:55:02+00:00"'
->>> orjson.dumps(
+>>> orjson_pydantic.dumps(
     datetime.datetime(2100, 9, 1, 21, 55, 2)
 )
 b'"2100-09-01T21:55:02"'
@@ -686,16 +686,16 @@ It is fastest to use the standard library's `zoneinfo.ZoneInfo` for timezones.
 `datetime.time` objects must not have a `tzinfo`.
 
 ```python
->>> import orjson, datetime
->>> orjson.dumps(datetime.time(12, 0, 15, 290))
+>>> import orjson_pydantic, datetime
+>>> orjson_pydantic.dumps(datetime.time(12, 0, 15, 290))
 b'"12:00:15.000290"'
 ```
 
 `datetime.date` objects will always serialize.
 
 ```python
->>> import orjson, datetime
->>> orjson.dumps(datetime.date(1900, 1, 2))
+>>> import orjson_pydantic, datetime
+>>> orjson_pydantic.dumps(datetime.date(1900, 1, 2))
 b'"1900-01-02"'
 ```
 
@@ -706,12 +706,12 @@ before calling `dumps()`. If using an unsupported type such as
 `pendulum.datetime`, use `default`.
 
 To disable serialization of `datetime` objects specify the option
-`orjson.OPT_PASSTHROUGH_DATETIME`.
+`orjson_pydantic.OPT_PASSTHROUGH_DATETIME`.
 
 To use "Z" suffix instead of "+00:00" to indicate UTC ("Zulu") time, use the option
-`orjson.OPT_UTC_Z`.
+`orjson_pydantic.OPT_UTC_Z`.
 
-To assume datetimes without timezone are UTC, se the option `orjson.OPT_NAIVE_UTC`.
+To assume datetimes without timezone are UTC, se the option `orjson_pydantic.OPT_NAIVE_UTC`.
 
 ### enum
 
@@ -722,9 +722,9 @@ orjson serializes enums natively. Options apply to their values.
 >>>
 class DatetimeEnum(enum.Enum):
     EPOCH = datetime.datetime(1970, 1, 1, 0, 0, 0)
->>> orjson.dumps(DatetimeEnum.EPOCH)
+>>> orjson_pydantic.dumps(DatetimeEnum.EPOCH)
 b'"1970-01-01T00:00:00"'
->>> orjson.dumps(DatetimeEnum.EPOCH, option=orjson.OPT_NAIVE_UTC)
+>>> orjson_pydantic.dumps(DatetimeEnum.EPOCH, option=orjson_pydantic.OPT_NAIVE_UTC)
 b'"1970-01-01T00:00:00+00:00"'
 ```
 
@@ -746,7 +746,7 @@ def default(obj):
 class CustomEnum(enum.Enum):
     ONE = Custom(1)
 
->>> orjson.dumps(CustomEnum.ONE, default=default)
+>>> orjson_pydantic.dumps(CustomEnum.ONE, default=default)
 b'1'
 ```
 
@@ -758,12 +758,12 @@ simplejson, and json. ujson 1.35 was inaccurate in both serialization and
 deserialization, i.e., it modifies the data, and the recent 2.0 release is
 accurate.
 
-`orjson.dumps()` serializes Nan, Infinity, and -Infinity, which are not
+`orjson_pydantic.dumps()` serializes Nan, Infinity, and -Infinity, which are not
 compliant JSON, as `null`:
 
 ```python
->>> import orjson, ujson, rapidjson, json
->>> orjson.dumps([float("NaN"), float("Infinity"), float("-Infinity")])
+>>> import orjson_pydantic, ujson, rapidjson, json
+>>> orjson_pydantic.dumps([float("NaN"), float("Infinity"), float("-Infinity")])
 b'[null,null,null]'
 >>> ujson.dumps([float("NaN"), float("Infinity"), float("-Infinity")])
 OverflowError: Invalid Inf value when encoding double
@@ -784,12 +784,12 @@ web browsers. For those implementations, `dumps()` can be configured to
 raise a `JSONEncodeError` on values exceeding the 53-bit range.
 
 ```python
->>> import orjson
->>> orjson.dumps(9007199254740992)
+>>> import orjson_pydantic
+>>> orjson_pydantic.dumps(9007199254740992)
 b'9007199254740992'
->>> orjson.dumps(9007199254740992, option=orjson.OPT_STRICT_INTEGER)
+>>> orjson_pydantic.dumps(9007199254740992, option=orjson_pydantic.OPT_STRICT_INTEGER)
 JSONEncodeError: Integer exceeds 53-bit range
->>> orjson.dumps(-9007199254740992, option=orjson.OPT_STRICT_INTEGER)
+>>> orjson_pydantic.dumps(-9007199254740992, option=orjson_pydantic.OPT_STRICT_INTEGER)
 JSONEncodeError: Integer exceeds 53-bit range
 ```
 
@@ -802,13 +802,13 @@ orjson natively serializes `numpy.ndarray` and individual `numpy.float64`,
 
 orjson is faster than all compared libraries at serializing
 numpy instances. Serializing numpy data requires specifying
-`option=orjson.OPT_SERIALIZE_NUMPY`.
+`option=orjson_pydantic.OPT_SERIALIZE_NUMPY`.
 
 ```python
->>> import orjson, numpy
->>> orjson.dumps(
+>>> import orjson_pydantic, numpy
+>>> orjson_pydantic.dumps(
         numpy.array([[1, 2, 3], [4, 5, 6]]),
-        option=orjson.OPT_SERIALIZE_NUMPY,
+        option=orjson_pydantic.OPT_SERIALIZE_NUMPY,
 )
 b'[[1,2,3],[4,5,6]]'
 ```
@@ -820,18 +820,18 @@ supported datatypes.
 datetime options affect them.
 
 ```python
->>> import orjson, numpy
->>> orjson.dumps(
+>>> import orjson_pydantic, numpy
+>>> orjson_pydantic.dumps(
         numpy.datetime64("2021-01-01T00:00:00.172"),
-        option=orjson.OPT_SERIALIZE_NUMPY,
+        option=orjson_pydantic.OPT_SERIALIZE_NUMPY,
 )
 b'"2021-01-01T00:00:00.172000"'
->>> orjson.dumps(
+>>> orjson_pydantic.dumps(
         numpy.datetime64("2021-01-01T00:00:00.172"),
         option=(
-            orjson.OPT_SERIALIZE_NUMPY |
-            orjson.OPT_NAIVE_UTC |
-            orjson.OPT_OMIT_MICROSECONDS
+            orjson_pydantic.OPT_SERIALIZE_NUMPY |
+            orjson_pydantic.OPT_NAIVE_UTC |
+            orjson_pydantic.OPT_OMIT_MICROSECONDS
         ),
 )
 b'"2021-01-01T00:00:00+00:00"'
@@ -841,7 +841,7 @@ If an array is not a contiguous C array, contains an supported datatype,
 or contains a `numpy.datetime64` using an unsupported representation
 (e.g., picoseconds), orjson falls through to `default`. In `default`,
 `obj.tolist()` can be specified. If an array is malformed, which
-is not expected, `orjson.JSONEncodeError` is raised.
+is not expected, `orjson_pydantic.JSONEncodeError` is raised.
 
 This measures serializing 92MiB of JSON from an `numpy.ndarray` with
 dimensions of `(50000, 100)` and `numpy.float64` values:
@@ -891,16 +891,16 @@ orjson is strict about UTF-8 conformance. This is stricter than the standard
 library's json module, which will serialize and deserialize UTF-16 surrogates,
 e.g., "\ud800", that are invalid UTF-8.
 
-If `orjson.dumps()` is given a `str` that does not contain valid UTF-8,
-`orjson.JSONEncodeError` is raised. If `loads()` receives invalid UTF-8,
-`orjson.JSONDecodeError` is raised.
+If `orjson_pydantic.dumps()` is given a `str` that does not contain valid UTF-8,
+`orjson_pydantic.JSONEncodeError` is raised. If `loads()` receives invalid UTF-8,
+`orjson_pydantic.JSONDecodeError` is raised.
 
 orjson and rapidjson are the only compared JSON libraries to consistently
 error on bad input.
 
 ```python
->>> import orjson, ujson, rapidjson, json
->>> orjson.dumps('\ud800')
+>>> import orjson_pydantic, ujson, rapidjson, json
+>>> orjson_pydantic.dumps('\ud800')
 JSONEncodeError: str is not valid UTF-8: surrogates not allowed
 >>> ujson.dumps('\ud800')
 UnicodeEncodeError: 'utf-8' codec ...
@@ -908,7 +908,7 @@ UnicodeEncodeError: 'utf-8' codec ...
 UnicodeEncodeError: 'utf-8' codec ...
 >>> json.dumps('\ud800')
 '"\\ud800"'
->>> orjson.loads('"\\ud800"')
+>>> orjson_pydantic.loads('"\\ud800"')
 JSONDecodeError: unexpected end of hex escape at line 1 column 8: line 1 column 1 (char 0)
 >>> ujson.loads('"\\ud800"')
 ''
@@ -922,10 +922,10 @@ To make a best effort at deserializing bad input, first decode `bytes` using
 the `replace` or `lossy` argument for `errors`:
 
 ```python
->>> import orjson
->>> orjson.loads(b'"\xed\xa0\x80"')
+>>> import orjson_pydantic
+>>> orjson_pydantic.loads(b'"\xed\xa0\x80"')
 JSONDecodeError: str is not valid UTF-8: surrogates not allowed
->>> orjson.loads(b'"\xed\xa0\x80"'.decode("utf-8", "replace"))
+>>> orjson_pydantic.loads(b'"\xed\xa0\x80"'.decode("utf-8", "replace"))
 '���'
 ```
 
@@ -936,10 +936,10 @@ orjson serializes `uuid.UUID` instances to
 "f81d4fae-7dec-11d0-a765-00a0c91e6bf6".
 
 ``` python
->>> import orjson, uuid
->>> orjson.dumps(uuid.UUID('f81d4fae-7dec-11d0-a765-00a0c91e6bf6'))
+>>> import orjson_pydantic, uuid
+>>> orjson_pydantic.dumps(uuid.UUID('f81d4fae-7dec-11d0-a765-00a0c91e6bf6'))
 b'"f81d4fae-7dec-11d0-a765-00a0c91e6bf6"'
->>> orjson.dumps(uuid.uuid5(uuid.NAMESPACE_DNS, "python.org"))
+>>> orjson_pydantic.dumps(uuid.uuid5(uuid.NAMESPACE_DNS, "python.org"))
 b'"886313e1-3b8a-5372-9b90-0c9aee199e5d"'
 ```
 

@@ -16,7 +16,7 @@ try:
     import psutil
 except ImportError:
     psutil = None  # type: ignore
-import orjson
+import orjson_pydantic
 import pytest
 
 try:
@@ -73,10 +73,10 @@ class MemoryTests(unittest.TestCase):
         """
         proc = psutil.Process()
         gc.collect()
-        val = orjson.loads(FIXTURE)
+        val = orjson_pydantic.loads(FIXTURE)
         mem = proc.memory_info().rss
         for _ in range(10000):
-            val = orjson.loads(FIXTURE)
+            val = orjson_pydantic.loads(FIXTURE)
         gc.collect()
         self.assertTrue(proc.memory_info().rss <= mem + MAX_INCREASE)
 
@@ -90,10 +90,10 @@ class MemoryTests(unittest.TestCase):
         proc = psutil.Process()
         gc.collect()
         fixture = FIXTURE.encode("utf-8")
-        val = orjson.loads(fixture)
+        val = orjson_pydantic.loads(fixture)
         mem = proc.memory_info().rss
         for _ in range(10000):
-            val = orjson.loads(memoryview(fixture))
+            val = orjson_pydantic.loads(memoryview(fixture))
         gc.collect()
         self.assertTrue(proc.memory_info().rss <= mem + MAX_INCREASE)
 
@@ -106,11 +106,11 @@ class MemoryTests(unittest.TestCase):
         """
         proc = psutil.Process()
         gc.collect()
-        fixture = orjson.loads(FIXTURE)
-        val = orjson.dumps(fixture)
+        fixture = orjson_pydantic.loads(FIXTURE)
+        val = orjson_pydantic.dumps(fixture)
         mem = proc.memory_info().rss
         for _ in range(10000):
-            val = orjson.dumps(fixture)
+            val = orjson_pydantic.dumps(fixture)
         gc.collect()
         self.assertTrue(proc.memory_info().rss <= mem + MAX_INCREASE)
 
@@ -128,8 +128,8 @@ class MemoryTests(unittest.TestCase):
         i = 0
         for _ in range(n):
             try:
-                orjson.loads("")
-            except orjson.JSONDecodeError:
+                orjson_pydantic.loads("")
+            except orjson_pydantic.JSONDecodeError:
                 i += 1
         assert n == i
         self.assertTrue(proc.memory_info().rss <= mem + MAX_INCREASE)
@@ -150,8 +150,8 @@ class MemoryTests(unittest.TestCase):
         i = 0
         for _ in range(n):
             try:
-                orjson.dumps(data)
-            except orjson.JSONEncodeError:
+                orjson_pydantic.dumps(data)
+            except orjson_pydantic.JSONEncodeError:
                 i += 1
         assert n == i
         self.assertTrue(proc.memory_info().rss <= mem + MAX_INCREASE)
@@ -166,7 +166,7 @@ class MemoryTests(unittest.TestCase):
         """
         proc = psutil.Process()
         gc.collect()
-        fixture = orjson.loads(FIXTURE)
+        fixture = orjson_pydantic.loads(FIXTURE)
 
         class Custom:
             def __init__(self, name):
@@ -176,10 +176,10 @@ class MemoryTests(unittest.TestCase):
                 return f"{self.__class__.__name__}({self.name})"
 
         fixture["custom"] = Custom("orjson")
-        val = orjson.dumps(fixture, default=default)
+        val = orjson_pydantic.dumps(fixture, default=default)
         mem = proc.memory_info().rss
         for _ in range(10000):
-            val = orjson.dumps(fixture, default=default)
+            val = orjson_pydantic.dumps(fixture, default=default)
         gc.collect()
         self.assertTrue(proc.memory_info().rss <= mem + MAX_INCREASE)
 
@@ -192,10 +192,10 @@ class MemoryTests(unittest.TestCase):
         """
         proc = psutil.Process()
         gc.collect()
-        val = orjson.dumps(DATACLASS_FIXTURE)
+        val = orjson_pydantic.dumps(DATACLASS_FIXTURE)
         mem = proc.memory_info().rss
         for _ in range(100):
-            val = orjson.dumps(DATACLASS_FIXTURE)
+            val = orjson_pydantic.dumps(DATACLASS_FIXTURE)
         gc.collect()
         self.assertTrue(proc.memory_info().rss <= mem + MAX_INCREASE)
 
@@ -210,10 +210,10 @@ class MemoryTests(unittest.TestCase):
         proc = psutil.Process()
         gc.collect()
         dt = datetime.datetime.now()
-        val = orjson.dumps(pytz.UTC.localize(dt))
+        val = orjson_pydantic.dumps(pytz.UTC.localize(dt))
         mem = proc.memory_info().rss
         for _ in range(50000):
-            val = orjson.dumps(pytz.UTC.localize(dt))
+            val = orjson_pydantic.dumps(pytz.UTC.localize(dt))
         gc.collect()
         self.assertTrue(proc.memory_info().rss <= mem + MAX_INCREASE)
 
@@ -228,11 +228,11 @@ class MemoryTests(unittest.TestCase):
         gc.collect()
         fixture = {"key_%s" % idx: "value" for idx in range(1024)}
         self.assertEqual(len(fixture), 1024)
-        val = orjson.dumps(fixture)
-        loaded = orjson.loads(val)
+        val = orjson_pydantic.dumps(fixture)
+        loaded = orjson_pydantic.loads(val)
         mem = proc.memory_info().rss
         for _ in range(100):
-            loaded = orjson.loads(val)
+            loaded = orjson_pydantic.loads(val)
         gc.collect()
         self.assertTrue(proc.memory_info().rss <= mem + MAX_INCREASE)
 
@@ -247,9 +247,9 @@ class MemoryTests(unittest.TestCase):
         proc = psutil.Process()
         gc.collect()
         fixture = numpy.random.rand(4, 4, 4)
-        val = orjson.dumps(fixture, option=orjson.OPT_SERIALIZE_NUMPY)
+        val = orjson_pydantic.dumps(fixture, option=orjson_pydantic.OPT_SERIALIZE_NUMPY)
         mem = proc.memory_info().rss
         for _ in range(100):
-            val = orjson.dumps(fixture, option=orjson.OPT_SERIALIZE_NUMPY)
+            val = orjson_pydantic.dumps(fixture, option=orjson_pydantic.OPT_SERIALIZE_NUMPY)
         gc.collect()
         self.assertTrue(proc.memory_info().rss <= mem + MAX_INCREASE)

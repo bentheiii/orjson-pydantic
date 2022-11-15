@@ -2,7 +2,7 @@
 
 import unittest
 
-import orjson
+import orjson_pydantic
 
 from .util import read_fixture_obj
 
@@ -15,8 +15,8 @@ class DictSortKeysTests(unittest.TestCase):
         """
         obj = read_fixture_obj("twitter.json.xz")
         self.assertNotEqual(list(obj.keys()), sorted(list(obj.keys())))
-        serialized = orjson.dumps(obj, option=orjson.OPT_SORT_KEYS)
-        val = orjson.loads(serialized)
+        serialized = orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_SORT_KEYS)
+        val = orjson_pydantic.loads(serialized)
         self.assertEqual(list(val.keys()), sorted(list(val.keys())))
 
     def test_canada_sorted(self):
@@ -25,8 +25,8 @@ class DictSortKeysTests(unittest.TestCase):
         """
         obj = read_fixture_obj("canada.json.xz")
         self.assertNotEqual(list(obj.keys()), sorted(list(obj.keys())))
-        serialized = orjson.dumps(obj, option=orjson.OPT_SORT_KEYS)
-        val = orjson.loads(serialized)
+        serialized = orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_SORT_KEYS)
+        val = orjson_pydantic.loads(serialized)
         self.assertEqual(list(val.keys()), sorted(list(val.keys())))
 
     def test_github_sorted(self):
@@ -36,8 +36,8 @@ class DictSortKeysTests(unittest.TestCase):
         obj = read_fixture_obj("github.json.xz")
         for each in obj:
             self.assertNotEqual(list(each.keys()), sorted(list(each.keys())))
-        serialized = orjson.dumps(obj, option=orjson.OPT_SORT_KEYS)
-        val = orjson.loads(serialized)
+        serialized = orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_SORT_KEYS)
+        val = orjson_pydantic.loads(serialized)
         for each in val:
             self.assertEqual(list(each.keys()), sorted(list(each.keys())))
 
@@ -47,6 +47,6 @@ class DictSortKeysTests(unittest.TestCase):
         """
         obj = {"a": 1, "ä": 2, "A": 3}
         self.assertNotEqual(list(obj.keys()), sorted(list(obj.keys())))
-        serialized = orjson.dumps(obj, option=orjson.OPT_SORT_KEYS)
-        val = orjson.loads(serialized)
+        serialized = orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_SORT_KEYS)
+        val = orjson_pydantic.loads(serialized)
         self.assertEqual(list(val.keys()), sorted(list(val.keys())))

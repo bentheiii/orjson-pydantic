@@ -3,7 +3,7 @@
 import unittest
 import uuid
 
-import orjson
+import orjson_pydantic
 
 
 class Custom:
@@ -35,14 +35,14 @@ class TypeTests(unittest.TestCase):
         """
         dumps() default not callable
         """
-        with self.assertRaises(orjson.JSONEncodeError):
-            orjson.dumps(Custom(), default=NotImplementedError)
+        with self.assertRaises(orjson_pydantic.JSONEncodeError):
+            orjson_pydantic.dumps(Custom(), default=NotImplementedError)
 
         ran = False
         try:
-            orjson.dumps(Custom(), default=NotImplementedError)
+            orjson_pydantic.dumps(Custom(), default=NotImplementedError)
         except Exception as err:
-            self.assertIsInstance(err, orjson.JSONEncodeError)
+            self.assertIsInstance(err, orjson_pydantic.JSONEncodeError)
             self.assertEqual(str(err), "default serializer exceeds recursion limit")
             ran = True
         self.assertTrue(ran)
@@ -57,14 +57,14 @@ class TypeTests(unittest.TestCase):
             return str(obj)
 
         self.assertEqual(
-            orjson.dumps(ref, default=default), b'"%s"' % str(ref).encode("utf-8")
+            orjson_pydantic.dumps(ref, default=default), b'"%s"' % str(ref).encode("utf-8")
         )
 
     def test_default_func_none(self):
         """
         dumps() default function None ok
         """
-        self.assertEqual(orjson.dumps(Custom(), default=lambda x: None), b"null")
+        self.assertEqual(orjson_pydantic.dumps(Custom(), default=lambda x: None), b"null")
 
     def test_default_func_empty(self):
         """
@@ -76,8 +76,8 @@ class TypeTests(unittest.TestCase):
             if isinstance(obj, set):
                 return list(obj)
 
-        self.assertEqual(orjson.dumps(ref, default=default), b"null")
-        self.assertEqual(orjson.dumps({ref}, default=default), b"[null]")
+        self.assertEqual(orjson_pydantic.dumps(ref, default=default), b"null")
+        self.assertEqual(orjson_pydantic.dumps({ref}, default=default), b"[null]")
 
     def test_default_func_exc(self):
         """
@@ -87,26 +87,26 @@ class TypeTests(unittest.TestCase):
         def default(obj):
             raise NotImplementedError
 
-        with self.assertRaises(orjson.JSONEncodeError):
-            orjson.dumps(Custom(), default=default)
+        with self.assertRaises(orjson_pydantic.JSONEncodeError):
+            orjson_pydantic.dumps(Custom(), default=default)
 
         ran = False
         try:
-            orjson.dumps(Custom(), default=default)
+            orjson_pydantic.dumps(Custom(), default=default)
         except Exception as err:
-            self.assertIsInstance(err, orjson.JSONEncodeError)
+            self.assertIsInstance(err, orjson_pydantic.JSONEncodeError)
             self.assertEqual(str(err), "Type is not JSON serializable: Custom")
             ran = True
         self.assertTrue(ran)
 
     def test_default_exception_type(self):
         """
-        dumps() TypeError in default() raises orjson.JSONEncodeError
+        dumps() TypeError in default() raises orjson_pydantic.JSONEncodeError
         """
         ref = Custom()
 
-        with self.assertRaises(orjson.JSONEncodeError):
-            orjson.dumps(ref, default=default_raises)
+        with self.assertRaises(orjson_pydantic.JSONEncodeError):
+            orjson_pydantic.dumps(ref, default=default_raises)
 
     def test_default_func_nested_str(self):
         """
@@ -118,7 +118,7 @@ class TypeTests(unittest.TestCase):
             return str(obj)
 
         self.assertEqual(
-            orjson.dumps({"a": ref}, default=default),
+            orjson_pydantic.dumps({"a": ref}, default=default),
             b'{"a":"%s"}' % str(ref).encode("utf-8"),
         )
 
@@ -133,7 +133,7 @@ class TypeTests(unittest.TestCase):
                 return [str(obj)]
 
         self.assertEqual(
-            orjson.dumps({"a": ref}, default=default),
+            orjson_pydantic.dumps({"a": ref}, default=default),
             b'{"a":["%s"]}' % str(ref).encode("utf-8"),
         )
 
@@ -147,7 +147,7 @@ class TypeTests(unittest.TestCase):
             return str(obj)
 
         self.assertEqual(
-            orjson.dumps([ref] * 100, default=default),
+            orjson_pydantic.dumps([ref] * 100, default=default),
             b"[%s]" % b",".join(b'"%s"' % str(ref).encode("utf-8") for _ in range(100)),
         )
 
@@ -160,14 +160,14 @@ class TypeTests(unittest.TestCase):
         def default(obj):
             return bytes(obj)
 
-        with self.assertRaises(orjson.JSONEncodeError):
-            orjson.dumps(ref, default=default)
+        with self.assertRaises(orjson_pydantic.JSONEncodeError):
+            orjson_pydantic.dumps(ref, default=default)
 
         ran = False
         try:
-            orjson.dumps(ref, default=default)
+            orjson_pydantic.dumps(ref, default=default)
         except Exception as err:
-            self.assertIsInstance(err, orjson.JSONEncodeError)
+            self.assertIsInstance(err, orjson_pydantic.JSONEncodeError)
             self.assertEqual(str(err), "Type is not JSON serializable: Custom")
             ran = True
         self.assertTrue(ran)
@@ -181,8 +181,8 @@ class TypeTests(unittest.TestCase):
         def default(obj):
             return "\ud800"
 
-        with self.assertRaises(orjson.JSONEncodeError):
-            orjson.dumps(ref, default=default)
+        with self.assertRaises(orjson_pydantic.JSONEncodeError):
+            orjson_pydantic.dumps(ref, default=default)
 
     def test_default_lambda_ok(self):
         """
@@ -190,7 +190,7 @@ class TypeTests(unittest.TestCase):
         """
         ref = Custom()
         self.assertEqual(
-            orjson.dumps(ref, default=lambda x: str(x)),
+            orjson_pydantic.dumps(ref, default=lambda x: str(x)),
             b'"%s"' % str(ref).encode("utf-8"),
         )
 
@@ -211,20 +211,20 @@ class TypeTests(unittest.TestCase):
         ref_obj = Custom()
         ref_bytes = b'"%s"' % str(ref_obj).encode("utf-8")
         for obj in [ref_obj] * 100:
-            self.assertEqual(orjson.dumps(obj, default=CustomSerializer()), ref_bytes)
+            self.assertEqual(orjson_pydantic.dumps(obj, default=CustomSerializer()), ref_bytes)
 
     def test_default_recursion(self):
         """
         dumps() default recursion limit
         """
-        self.assertEqual(orjson.dumps(Recursive(254), default=default), b"0")
+        self.assertEqual(orjson_pydantic.dumps(Recursive(254), default=default), b"0")
 
     def test_default_recursion_reset(self):
         """
         dumps() default recursion limit reset
         """
         self.assertEqual(
-            orjson.dumps(
+            orjson_pydantic.dumps(
                 [Recursive(254), {"a": "b"}, Recursive(254), Recursive(254)],
                 default=default,
             ),
@@ -240,5 +240,5 @@ class TypeTests(unittest.TestCase):
         def default(obj):
             return obj
 
-        with self.assertRaises(orjson.JSONEncodeError):
-            orjson.dumps(ref, default=default)
+        with self.assertRaises(orjson_pydantic.JSONEncodeError):
+            orjson_pydantic.dumps(ref, default=default)

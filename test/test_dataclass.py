@@ -7,7 +7,7 @@ from dataclasses import InitVar, asdict, dataclass, field
 from enum import Enum
 from typing import ClassVar, Dict, Optional
 
-import orjson
+import orjson_pydantic
 
 
 class AnEnum(Enum):
@@ -120,7 +120,7 @@ class DataclassTests(unittest.TestCase):
         """
         obj = Dataclass1("a", 1, None)
         self.assertEqual(
-            orjson.dumps(obj),
+            orjson_pydantic.dumps(obj),
             b'{"name":"a","number":1,"sub":null}',
         )
 
@@ -130,7 +130,7 @@ class DataclassTests(unittest.TestCase):
         """
         obj = Dataclass1("a", 1, Dataclass1("b", 2, None))
         self.assertEqual(
-            orjson.dumps(obj),
+            orjson_pydantic.dumps(obj),
             b'{"name":"a","number":1,"sub":{"name":"b","number":2,"sub":null}}',
         )
 
@@ -141,15 +141,15 @@ class DataclassTests(unittest.TestCase):
         obj1 = Dataclass1("a", 1, None)
         obj2 = Dataclass1("b", 2, obj1)
         obj1.sub = obj2
-        with self.assertRaises(orjson.JSONEncodeError):
-            orjson.dumps(obj1)
+        with self.assertRaises(orjson_pydantic.JSONEncodeError):
+            orjson_pydantic.dumps(obj1)
 
     def test_dataclass_empty(self):
         """
         dumps() no attributes
         """
         self.assertEqual(
-            orjson.dumps(EmptyDataclass()),
+            orjson_pydantic.dumps(EmptyDataclass()),
             b"{}",
         )
 
@@ -158,7 +158,7 @@ class DataclassTests(unittest.TestCase):
         dumps() no attributes slots
         """
         self.assertEqual(
-            orjson.dumps(EmptyDataclassSlots()),
+            orjson_pydantic.dumps(EmptyDataclassSlots()),
             b"{}",
         )
 
@@ -167,7 +167,7 @@ class DataclassTests(unittest.TestCase):
         dumps() dataclass default arg
         """
         obj = Dataclass2()
-        self.assertEqual(orjson.dumps(obj), b'{"name":"?"}')
+        self.assertEqual(orjson_pydantic.dumps(obj), b'{"name":"?"}')
 
     def test_dataclass_types(self):
         """
@@ -175,7 +175,7 @@ class DataclassTests(unittest.TestCase):
         """
         obj = Dataclass3("a", 1, {"a": "b"}, True, 1.1, [1, 2], (3, 4))
         self.assertEqual(
-            orjson.dumps(obj),
+            orjson_pydantic.dumps(obj),
             b'{"a":"a","b":1,"c":{"a":"b"},"d":true,"e":1.1,"f":[1,2],"g":[3,4]}',
         )
 
@@ -185,7 +185,7 @@ class DataclassTests(unittest.TestCase):
         """
         obj = Dataclass4("a", 1, 2.1)
         self.assertEqual(
-            orjson.dumps(obj),
+            orjson_pydantic.dumps(obj),
             b'{"a":"a","b":1,"c":2.1}',
         )
 
@@ -195,7 +195,7 @@ class DataclassTests(unittest.TestCase):
         """
         obj = Dataclass4("a", 1)
         self.assertEqual(
-            orjson.dumps(obj),
+            orjson_pydantic.dumps(obj),
             b'{"a":"a","b":1,"c":1.1}',
         )
 
@@ -205,7 +205,7 @@ class DataclassTests(unittest.TestCase):
         """
         obj = Datasubclass("a", 1, None, False)
         self.assertEqual(
-            orjson.dumps(obj),
+            orjson_pydantic.dumps(obj),
             b'{"name":"a","number":1,"sub":null,"additional":false}',
         )
 
@@ -215,7 +215,7 @@ class DataclassTests(unittest.TestCase):
         """
         obj = Slotsdataclass("a", 1, "c", "d")
         assert "__dict__" not in dir(obj)
-        self.assertEqual(orjson.dumps(obj), b'{"a":"a","b":1}')
+        self.assertEqual(orjson_pydantic.dumps(obj), b'{"a":"a","b":1}')
 
     def test_dataclass_default(self):
         """
@@ -232,7 +232,7 @@ class DataclassTests(unittest.TestCase):
             uuid.UUID("808989c0-00d5-48a8-b5c4-c804bf9032f2"), AnEnum.ONE
         )
         self.assertEqual(
-            orjson.dumps(obj, default=default),
+            orjson_pydantic.dumps(obj, default=default),
             b'{"a":"808989c0-00d5-48a8-b5c4-c804bf9032f2","b":1}',
         )
 
@@ -242,7 +242,7 @@ class DataclassTests(unittest.TestCase):
         """
         obj = UnsortedDataclass(1, 2, 3, None)
         self.assertEqual(
-            orjson.dumps(obj, option=orjson.OPT_SORT_KEYS),
+            orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_SORT_KEYS),
             b'{"c":1,"b":2,"a":3,"d":null}',
         )
 
@@ -252,7 +252,7 @@ class DataclassTests(unittest.TestCase):
         """
         obj = UnsortedDataclass(1, 2, 3, {"f": 2, "e": 1})
         self.assertEqual(
-            orjson.dumps(obj, option=orjson.OPT_SORT_KEYS),
+            orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_SORT_KEYS),
             b'{"c":1,"b":2,"a":3,"d":{"e":1,"f":2}}',
         )
 
@@ -262,7 +262,7 @@ class DataclassTests(unittest.TestCase):
         """
         obj = InitDataclass("zxc", "vbn")
         self.assertEqual(
-            orjson.dumps(obj),
+            orjson_pydantic.dumps(obj),
             b'{"ab":"zxc vbn"}',
         )
 
@@ -272,7 +272,7 @@ class DataclassTests(unittest.TestCase):
         """
         obj = Dataclass1("a", 1, None)
         self.assertEqual(
-            orjson.dumps(obj, option=orjson.OPT_SERIALIZE_DATACLASS),
+            orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_SERIALIZE_DATACLASS),
             b'{"name":"a","number":1,"sub":null}',
         )
 
@@ -283,11 +283,11 @@ class DataclassPassthroughTests(unittest.TestCase):
         dumps() dataclass passes to default with OPT_PASSTHROUGH_DATACLASS
         """
         obj = Dataclass1("a", 1, None)
-        with self.assertRaises(orjson.JSONEncodeError):
-            orjson.dumps(obj, option=orjson.OPT_PASSTHROUGH_DATACLASS)
-        with self.assertRaises(orjson.JSONEncodeError):
-            orjson.dumps(
-                InitDataclass("zxc", "vbn"), option=orjson.OPT_PASSTHROUGH_DATACLASS
+        with self.assertRaises(orjson_pydantic.JSONEncodeError):
+            orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_PASSTHROUGH_DATACLASS)
+        with self.assertRaises(orjson_pydantic.JSONEncodeError):
+            orjson_pydantic.dumps(
+                InitDataclass("zxc", "vbn"), option=orjson_pydantic.OPT_PASSTHROUGH_DATACLASS
             )
 
     def test_dataclass_passthrough_default(self):
@@ -296,7 +296,7 @@ class DataclassPassthroughTests(unittest.TestCase):
         """
         obj = Dataclass1("a", 1, None)
         self.assertEqual(
-            orjson.dumps(obj, option=orjson.OPT_PASSTHROUGH_DATACLASS, default=asdict),
+            orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_PASSTHROUGH_DATACLASS, default=asdict),
             b'{"name":"a","number":1,"sub":null}',
         )
 
@@ -306,7 +306,7 @@ class DataclassPassthroughTests(unittest.TestCase):
             raise TypeError
 
         self.assertEqual(
-            orjson.dumps(obj, option=orjson.OPT_PASSTHROUGH_DATACLASS, default=default),
+            orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_PASSTHROUGH_DATACLASS, default=default),
             b'{"name":"a","number":1}',
         )
 
@@ -314,4 +314,4 @@ class DataclassPassthroughTests(unittest.TestCase):
 class AbstractDataclassTests(unittest.TestCase):
     def test_dataclass_abc(self):
         obj = ConcreteAbc(1.0)
-        self.assertEqual(orjson.dumps(obj), b'{"attr":1.0}')
+        self.assertEqual(orjson_pydantic.dumps(obj), b'{"attr":1.0}')

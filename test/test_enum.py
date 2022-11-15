@@ -4,7 +4,7 @@ import datetime
 import enum
 import unittest
 
-import orjson
+import orjson_pydantic
 
 
 class StrEnum(str, enum.Enum):
@@ -68,40 +68,40 @@ class EnumTests(unittest.TestCase):
                 B = "b"
 
     def test_arbitrary_enum(self):
-        self.assertEqual(orjson.dumps(UnspecifiedEnum.A), b'"a"')
-        self.assertEqual(orjson.dumps(UnspecifiedEnum.B), b"1")
-        self.assertEqual(orjson.dumps(UnspecifiedEnum.C), b"1.1")
-        self.assertEqual(orjson.dumps(UnspecifiedEnum.D), b'{"d":1}')
+        self.assertEqual(orjson_pydantic.dumps(UnspecifiedEnum.A), b'"a"')
+        self.assertEqual(orjson_pydantic.dumps(UnspecifiedEnum.B), b"1")
+        self.assertEqual(orjson_pydantic.dumps(UnspecifiedEnum.C), b"1.1")
+        self.assertEqual(orjson_pydantic.dumps(UnspecifiedEnum.D), b'{"d":1}')
 
     def test_custom_enum(self):
-        self.assertEqual(orjson.dumps(UnspecifiedEnum.E, default=default), b'"c"')
+        self.assertEqual(orjson_pydantic.dumps(UnspecifiedEnum.E, default=default), b'"c"')
 
     def test_enum_options(self):
         self.assertEqual(
-            orjson.dumps(UnspecifiedEnum.F, option=orjson.OPT_NAIVE_UTC),
+            orjson_pydantic.dumps(UnspecifiedEnum.F, option=orjson_pydantic.OPT_NAIVE_UTC),
             b'"1970-01-01T00:00:00+00:00"',
         )
 
     def test_int_enum(self):
-        self.assertEqual(orjson.dumps(IntEnum.ONE), b"1")
+        self.assertEqual(orjson_pydantic.dumps(IntEnum.ONE), b"1")
 
     def test_intenum_enum(self):
-        self.assertEqual(orjson.dumps(IntEnumEnum.ONE), b"1")
+        self.assertEqual(orjson_pydantic.dumps(IntEnumEnum.ONE), b"1")
 
     def test_intflag_enum(self):
-        self.assertEqual(orjson.dumps(IntFlagEnum.ONE), b"1")
+        self.assertEqual(orjson_pydantic.dumps(IntFlagEnum.ONE), b"1")
 
     def test_flag_enum(self):
-        self.assertEqual(orjson.dumps(FlagEnum.ONE), b"1")
+        self.assertEqual(orjson_pydantic.dumps(FlagEnum.ONE), b"1")
 
     def test_auto_enum(self):
-        self.assertEqual(orjson.dumps(AutoEnum.A), b'"a"')
+        self.assertEqual(orjson_pydantic.dumps(AutoEnum.A), b'"a"')
 
     def test_float_enum(self):
-        self.assertEqual(orjson.dumps(FloatEnum.ONE), b"1.1")
+        self.assertEqual(orjson_pydantic.dumps(FloatEnum.ONE), b"1.1")
 
     def test_str_enum(self):
-        self.assertEqual(orjson.dumps(StrEnum.AAA), b'"aaa"')
+        self.assertEqual(orjson_pydantic.dumps(StrEnum.AAA), b'"aaa"')
 
     def test_bool_enum(self):
         with self.assertRaises(TypeError):
@@ -111,8 +111,8 @@ class EnumTests(unittest.TestCase):
 
     def test_non_str_keys_enum(self):
         self.assertEqual(
-            orjson.dumps({StrEnum.AAA: 1}, option=orjson.OPT_NON_STR_KEYS), b'{"aaa":1}'
+            orjson_pydantic.dumps({StrEnum.AAA: 1}, option=orjson_pydantic.OPT_NON_STR_KEYS), b'{"aaa":1}'
         )
         self.assertEqual(
-            orjson.dumps({IntEnum.ONE: 1}, option=orjson.OPT_NON_STR_KEYS), b'{"1":1}'
+            orjson_pydantic.dumps({IntEnum.ONE: 1}, option=orjson_pydantic.OPT_NON_STR_KEYS), b'{"1":1}'
         )

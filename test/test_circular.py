@@ -2,7 +2,7 @@
 
 import unittest
 
-import orjson
+import orjson_pydantic
 
 
 class CircularTests(unittest.TestCase):
@@ -12,8 +12,8 @@ class CircularTests(unittest.TestCase):
         """
         obj = {}
         obj["obj"] = obj
-        with self.assertRaises(orjson.JSONEncodeError):
-            orjson.dumps(obj)
+        with self.assertRaises(orjson_pydantic.JSONEncodeError):
+            orjson_pydantic.dumps(obj)
 
     def test_circular_list(self):
         """
@@ -21,8 +21,8 @@ class CircularTests(unittest.TestCase):
         """
         obj = []
         obj.append(obj)
-        with self.assertRaises(orjson.JSONEncodeError):
-            orjson.dumps(obj)
+        with self.assertRaises(orjson_pydantic.JSONEncodeError):
+            orjson_pydantic.dumps(obj)
 
     def test_circular_nested(self):
         """
@@ -30,5 +30,5 @@ class CircularTests(unittest.TestCase):
         """
         obj = {}
         obj["list"] = [{"obj": obj}]
-        with self.assertRaises(orjson.JSONEncodeError):
-            orjson.dumps(obj)
+        with self.assertRaises(orjson_pydantic.JSONEncodeError):
+            orjson_pydantic.dumps(obj)

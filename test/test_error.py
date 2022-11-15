@@ -3,7 +3,7 @@
 import json
 import unittest
 
-import orjson
+import orjson_pydantic
 import pytest
 
 from .util import read_fixture_str
@@ -36,7 +36,7 @@ class JsonDecodeErrorTests(unittest.TestCase):
             json.loads(data)
 
         with pytest.raises(json.decoder.JSONDecodeError) as orjson_exc_info:
-            orjson.loads(data)
+            orjson_pydantic.loads(data)
 
         assert (
             self._get_error_infos(json_exc_info)
@@ -86,7 +86,7 @@ class JsonDecodeErrorTests(unittest.TestCase):
         }
 
         with pytest.raises(json.decoder.JSONDecodeError) as orjson_exc_info:
-            orjson.loads(data)
+            orjson_pydantic.loads(data)
 
         assert self._get_error_infos(orjson_exc_info) == {
             "pos": 6,

@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from operator import itemgetter
 from threading import get_ident
 
-import orjson
+import orjson_pydantic
 
 
 DATA = sorted(
@@ -37,7 +37,7 @@ sys.stdout.flush()
 
 def test_func(n):
     try:
-        assert sorted(orjson.loads(orjson.dumps(DATA)), key=itemgetter("id")) == DATA
+        assert sorted(orjson_pydantic.loads(orjson_pydantic.dumps(DATA)), key=itemgetter("id")) == DATA
     except Exception:
         STATUS = 1
         traceback.print_exc()

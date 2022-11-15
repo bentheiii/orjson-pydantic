@@ -2,7 +2,7 @@
 
 import unittest
 
-import orjson
+import orjson_pydantic
 
 try:
     from typing import TypedDict
@@ -21,4 +21,4 @@ class TypedDictTests(unittest.TestCase):
             b: int
 
         obj = TypedDict1(a="a", b=1)
-        self.assertEqual(orjson.dumps(obj), b'{"a":"a","b":1}')
+        self.assertEqual(orjson_pydantic.dumps(obj), b'{"a":"a","b":1}')

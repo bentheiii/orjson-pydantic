@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 from timeit import timeit
 
-import orjson
+import orjson_pydantic
 import rapidjson
 import simplejson
 import ujson
@@ -26,7 +26,7 @@ def read_fixture_obj(filename):
         contents = lzma.decompress(path.read_bytes())
     else:
         contents = path.read_bytes()
-    return orjson.loads(contents)
+    return orjson_pydantic.loads(contents)
 
 
 data = read_fixture_obj("twitter.json.xz")
@@ -83,9 +83,9 @@ for lib_name in LIBRARIES:
             number=ITERATIONS,
         )
     elif lib_name == "orjson":
-        time_unsorted = timeit(lambda: orjson.dumps(data), number=ITERATIONS)
+        time_unsorted = timeit(lambda: orjson_pydantic.dumps(data), number=ITERATIONS)
         time_sorted = timeit(
-            lambda: orjson.dumps(data, None, orjson.OPT_SORT_KEYS),
+            lambda: orjson_pydantic.dumps(data, None, orjson_pydantic.OPT_SORT_KEYS),
             number=ITERATIONS,
         )
         orjson_time_sorted = per_iter_latency(time_sorted)

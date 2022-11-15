@@ -3,7 +3,7 @@
 import unittest
 import uuid
 
-import orjson
+import orjson_pydantic
 
 
 class UUIDTests(unittest.TestCase):
@@ -44,24 +44,24 @@ class UUIDTests(unittest.TestCase):
         class AUUID(uuid.UUID):
             pass
 
-        with self.assertRaises(orjson.JSONEncodeError):
-            orjson.dumps(AUUID("{12345678-1234-5678-1234-567812345678}"))
+        with self.assertRaises(orjson_pydantic.JSONEncodeError):
+            orjson_pydantic.dumps(AUUID("{12345678-1234-5678-1234-567812345678}"))
 
     def test_serializes_withopt(self):
         """
         dumps() accepts deprecated OPT_SERIALIZE_UUID
         """
         self.assertEqual(
-            orjson.dumps(
+            orjson_pydantic.dumps(
                 uuid.UUID("7202d115-7ff3-4c81-a7c1-2a1f067b1ece"),
-                option=orjson.OPT_SERIALIZE_UUID,
+                option=orjson_pydantic.OPT_SERIALIZE_UUID,
             ),
             b'"7202d115-7ff3-4c81-a7c1-2a1f067b1ece"',
         )
 
     def test_nil_uuid(self):
         self.assertEqual(
-            orjson.dumps(uuid.UUID("00000000-0000-0000-0000-000000000000")),
+            orjson_pydantic.dumps(uuid.UUID("00000000-0000-0000-0000-000000000000")),
             b'"00000000-0000-0000-0000-000000000000"',
         )
 
@@ -81,7 +81,7 @@ class UUIDTests(unittest.TestCase):
             uuid.UUID(fields=(0x12345678, 0x1234, 0x5678, 0x12, 0x34, 0x567812345678)),
             uuid.UUID(int=0x12345678123456781234567812345678),
         ]
-        result = orjson.dumps(uuids)
+        result = orjson_pydantic.dumps(uuids)
         canonical_uuids = ['"%s"' % str(u) for u in uuids]
         serialized = ("[%s]" % ",".join(canonical_uuids)).encode("utf8")
         self.assertEqual(result, serialized)
@@ -89,7 +89,7 @@ class UUIDTests(unittest.TestCase):
     def test_serializes_correctly_with_leading_zeroes(self):
         instance = uuid.UUID(int=0x00345678123456781234567812345678)
         self.assertEqual(
-            orjson.dumps(instance),
+            orjson_pydantic.dumps(instance),
             ('"%s"' % str(instance)).encode("utf8"),
         )
 
@@ -102,6 +102,6 @@ class UUIDTests(unittest.TestCase):
         )
         for val in uuids:
             self.assertEqual(
-                orjson.dumps(val),
+                orjson_pydantic.dumps(val),
                 f'"{val}"'.encode("utf-8"),
             )

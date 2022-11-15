@@ -3,7 +3,7 @@ import unittest
 from typing import Optional, Sequence, Tuple, Union
 
 import numpy as np
-import orjson
+import orjson_pydantic
 from pydantic import BaseModel
 
 
@@ -96,7 +96,7 @@ class PydanticTests(unittest.TestCase):
         """
         obj = Model1(hi="a", number=1, sub=None)
         self.assertEqual(
-            orjson.dumps(obj, option=orjson.OPT_SERIALIZE_PYDANTIC),
+            orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_SERIALIZE_PYDANTIC),
             b'{"hi":"a","number":1,"sub":null}',
         )
 
@@ -107,7 +107,7 @@ class PydanticTests(unittest.TestCase):
         obj = Model1(hi="a", number=1, sub=None)
         obj2 = Model2(previous=obj, bye="lala")
         self.assertEqual(
-            orjson.dumps(obj2, option=orjson.OPT_SERIALIZE_PYDANTIC),
+            orjson_pydantic.dumps(obj2, option=orjson_pydantic.OPT_SERIALIZE_PYDANTIC),
             b'{"bye":"lala","previous":{"hi":"a","number":1,"sub":null}}',
         )
 
@@ -117,7 +117,7 @@ class PydanticTests(unittest.TestCase):
         """
         obj = RegularPolygon(side_count=8, side_length=12.345, vertex_coordinates=None)
         self.assertEqual(
-            orjson.dumps(obj, option=orjson.OPT_SERIALIZE_PYDANTIC),
+            orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_SERIALIZE_PYDANTIC),
             b'{"side_count":8,"side_length":12.345,"vertex_coordinates":null}',
         )
 
@@ -138,7 +138,7 @@ class PydanticTests(unittest.TestCase):
             ),
         }
         self.assertEqual(
-            orjson.dumps(shapes, option=orjson.OPT_SERIALIZE_PYDANTIC),
+            orjson_pydantic.dumps(shapes, option=orjson_pydantic.OPT_SERIALIZE_PYDANTIC),
             b'{"octagon":{"side_count":8,"side_length":12.345,"vertex_coordinates":null},"circle":{"radius":839.4871},"decagon":{"side_count":10,"side_length":2.1112,"vertex_coordinates":null},"triangle":{"side_count":3,"side_length":0.9090909,"vertex_coordinates":null}}',
         )
 
@@ -157,6 +157,6 @@ class PydanticTests(unittest.TestCase):
 
         complex_shape = ComplexShape(inner_shapes=inner, name="weird shape")
         self.assertEqual(
-            orjson.dumps(complex_shape, option=orjson.OPT_SERIALIZE_PYDANTIC),
+            orjson_pydantic.dumps(complex_shape, option=orjson_pydantic.OPT_SERIALIZE_PYDANTIC),
             b'{"inner_shapes":[{"side_count":8,"side_length":12.345,"vertex_coordinates":null},{"radius":839.4871},{"side_count":10,"side_length":2.1112,"vertex_coordinates":null},{"side_count":3,"side_length":0.9090909,"vertex_coordinates":null}],"name":"weird shape"}',
         )

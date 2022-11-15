@@ -2,7 +2,7 @@
 
 import unittest
 
-import orjson
+import orjson_pydantic
 
 from .util import read_fixture_str
 
@@ -10,7 +10,7 @@ from .util import read_fixture_str
 class JsonCheckerTests(unittest.TestCase):
     def _run_roundtrip_json(self, filename):
         data = read_fixture_str(filename, "roundtrip")
-        self.assertEqual(orjson.dumps(orjson.loads(data)), data.encode("utf-8"))
+        self.assertEqual(orjson_pydantic.dumps(orjson_pydantic.loads(data)), data.encode("utf-8"))
 
     def test_roundtrip001(self):
         """
