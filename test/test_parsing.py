@@ -2,34 +2,34 @@
 
 import unittest
 
-import orjson
+import orjson_pydantic
 
 from .util import read_fixture_bytes
 
 
 class JSONTestSuiteParsingTests(unittest.TestCase):
-    def _run_fail_json(self, filename, exc=orjson.JSONDecodeError):
+    def _run_fail_json(self, filename, exc=orjson_pydantic.JSONDecodeError):
         data = read_fixture_bytes(filename, "parsing")
         with self.assertRaises(exc, msg=data):
-            res = orjson.loads(data)
+            res = orjson_pydantic.loads(data)
         with self.assertRaises(exc, msg=data):
-            res = orjson.loads(bytearray(data))
+            res = orjson_pydantic.loads(bytearray(data))
         with self.assertRaises(exc, msg=data):
-            res = orjson.loads(memoryview(data))
+            res = orjson_pydantic.loads(memoryview(data))
         try:
             decoded = data.decode("utf-8")
         except UnicodeDecodeError:
             pass
         else:
             with self.assertRaises(exc, msg=decoded):
-                res = orjson.loads(decoded)
+                res = orjson_pydantic.loads(decoded)
 
     def _run_pass_json(self, filename, match=""):
         data = read_fixture_bytes(filename, "parsing")
-        orjson.loads(data)
-        orjson.loads(bytearray(data))
-        orjson.loads(memoryview(data))
-        orjson.loads(data.decode("utf-8"))
+        orjson_pydantic.loads(data)
+        orjson_pydantic.loads(bytearray(data))
+        orjson_pydantic.loads(memoryview(data))
+        orjson_pydantic.loads(data.decode("utf-8"))
 
     def test_y_array_arraysWithSpace(self):
         """

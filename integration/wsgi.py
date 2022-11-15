@@ -4,19 +4,19 @@ import os
 import lzma
 
 from flask import Flask
-import orjson
+import orjson_pydantic
 
 app = Flask(__name__)
 
 filename = os.path.join(os.path.dirname(__file__), "..", "data", "twitter.json.xz")
 
 with lzma.open(filename, "r") as fileh:
-    DATA = orjson.loads(fileh.read())
+    DATA = orjson_pydantic.loads(fileh.read())
 
 
 @app.route("/")
 def root():
-    data = orjson.dumps(DATA)
+    data = orjson_pydantic.dumps(DATA)
     return app.response_class(
         response=data, status=200, mimetype="application/json; charset=utf-8"
     )

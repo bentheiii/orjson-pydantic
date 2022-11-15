@@ -23,7 +23,7 @@ are `zoneinfo.ZoneInfo`.
 
 - Fix invalid indexing in line and column number reporting in
 `JSONDecodeError`.
-- Fix `orjson.OPT_STRICT_INTEGER` not raising an error on
+- Fix `orjson_pydantic.OPT_STRICT_INTEGER` not raising an error on
 values exceeding a 64-bit integer maximum.
 
 ## 3.6.5 - 2021-12-05
@@ -75,7 +75,7 @@ implementations that use AVX2 or SSE4.2.
 
 ### Added
 
-- `orjson.dumps()` serializes `numpy.datetime64` instances as RFC 3339
+- `orjson_pydantic.dumps()` serializes `numpy.datetime64` instances as RFC 3339
 strings.
 
 ## 3.5.4 - 2021-06-30
@@ -94,7 +94,7 @@ without default specified.
 
 ### Fixed
 
-- `orjson.JSONDecodeError` now has `pos`, `lineno`, and `colno`.
+- `orjson_pydantic.JSONDecodeError` now has `pos`, `lineno`, and `colno`.
 - Fix build on recent versions of Rust nightly.
 
 ## 3.5.2 - 2021-04-15
@@ -102,7 +102,7 @@ without default specified.
 ### Changed
 
 - Improve serialization and deserialization performance.
-- `orjson.dumps()` serializes individual `numpy.bool_` objects.
+- `orjson_pydantic.dumps()` serializes individual `numpy.bool_` objects.
 
 ## 3.5.1 - 2021-03-06
 
@@ -114,7 +114,7 @@ without default specified.
 
 ### Added
 
-- `orjson.loads()` supports reading from `memoryview` objects.
+- `orjson_pydantic.loads()` supports reading from `memoryview` objects.
 
 ### Fixed
 
@@ -124,7 +124,7 @@ four digits.
 
 ### Changed
 
-- `orjson.dumps()` when given a non-C contiguous `numpy.ndarray` has
+- `orjson_pydantic.dumps()` when given a non-C contiguous `numpy.ndarray` has
 an error message suggesting to use `default`.
 
 ## 3.4.8 - 2021-02-04
@@ -160,7 +160,7 @@ an error message suggesting to use `default`.
 
 ### Changed
 
-- `orjson.dumps()` serializes integers up to a 64-bit unsigned integer's
+- `orjson_pydantic.dumps()` serializes integers up to a 64-bit unsigned integer's
 maximum. It was previously the maximum of a 64-bit signed integer.
 
 ## 3.4.3 - 2020-10-30
@@ -181,7 +181,7 @@ maximum. It was previously the maximum of a 64-bit signed integer.
 
 ### Fixed
 
-- Fix `orjson.dumps.__module__` and `orjson.loads.__module__` not being the
+- Fix `orjson_pydantic.dumps.__module__` and `orjson_pydantic.loads.__module__` not being the
 `str` "orjson".
 
 ### Changed
@@ -209,7 +209,7 @@ maximum. It was previously the maximum of a 64-bit signed integer.
 
 - Fix failure to deserialize some latin1 strings on some platforms. This
 was introduced in 3.2.0.
-- Fix annotation of optional parameters on `orjson.dumps()` for `help()`.
+- Fix annotation of optional parameters on `orjson_pydantic.dumps()` for `help()`.
 
 ### Changed
 
@@ -219,9 +219,9 @@ was introduced in 3.2.0.
 
 ### Added
 
-- `orjson.dumps()` now serializes individual numpy floats and integers, e.g.,
+- `orjson_pydantic.dumps()` now serializes individual numpy floats and integers, e.g.,
 `numpy.float64(1.0)`.
-- `orjson.OPT_PASSTHROUGH_DATACLASS` causes `orjson.dumps()` to pass
+- `orjson_pydantic.OPT_PASSTHROUGH_DATACLASS` causes `orjson_pydantic.dumps()` to pass
 `dataclasses.dataclass` instances to `default`.
 
 ## 3.2.2 - 2020-07-13
@@ -238,13 +238,13 @@ was introduced in 3.2.0.
 
 ### Fixed
 
-- Fix `orjson.dumps(..., **{})` raising `TypeError` on python3.6.
+- Fix `orjson_pydantic.dumps(..., **{})` raising `TypeError` on python3.6.
 
 ## 3.2.0 - 2020-06-30
 
 ### Added
 
-- `orjson.OPT_APPEND_NEWLINE` appends a newline to output.
+- `orjson_pydantic.OPT_APPEND_NEWLINE` appends a newline to output.
 
 ### Changed
 
@@ -267,10 +267,10 @@ was introduced in 3.2.0.
 
 ### Added
 
-- `orjson.OPT_PASSTHROUGH_SUBCLASS` causes `orjson.dumps()` to pass
+- `orjson_pydantic.OPT_PASSTHROUGH_SUBCLASS` causes `orjson_pydantic.dumps()` to pass
 subclasses of builtin types to `default` so the caller can customize the
 output.
-- `orjson.OPT_PASSTHROUGH_DATETIME` causes `orjson.dumps()` to pass
+- `orjson_pydantic.OPT_PASSTHROUGH_DATETIME` causes `orjson_pydantic.dumps()` to pass
 `datetime` objects to `default` so the caller can customize the
 output.
 
@@ -278,19 +278,19 @@ output.
 
 ### Changed
 
-- `orjson.dumps()` does not serialize `dataclasses.dataclass` attributes
+- `orjson_pydantic.dumps()` does not serialize `dataclasses.dataclass` attributes
 that begin with a leading underscore, e.g., `_attr`. This is because of the
 Python idiom that a leading underscores marks an attribute as "private."
-- `orjson.dumps()` does not serialize `dataclasses.dataclass` attributes that
+- `orjson_pydantic.dumps()` does not serialize `dataclasses.dataclass` attributes that
 are `InitVar` or `ClassVar` whether using `__slots__` or not.
 
 ## 3.0.1 - 2020-05-19
 
 ### Fixed
 
-- `orjson.dumps()` raises an exception if the object to be serialized
-is not given as a positional argument. `orjson.dumps({})` is intended and ok
-while `orjson.dumps(obj={})` is an error. This makes it consistent with the
+- `orjson_pydantic.dumps()` raises an exception if the object to be serialized
+is not given as a positional argument. `orjson_pydantic.dumps({})` is intended and ok
+while `orjson_pydantic.dumps(obj={})` is an error. This makes it consistent with the
 documentation, `help()` annotation, and type annotation.
 - Fix orphan reference in exception creation that leaks memory until the
 garbage collector runs.
@@ -305,11 +305,11 @@ calling convention on python3.7 and above.
 
 ### Added
 
-- `orjson.dumps()` serializes subclasses of `str`, `int`, `list`, and `dict`.
+- `orjson_pydantic.dumps()` serializes subclasses of `str`, `int`, `list`, and `dict`.
 
 ### Changed
 
-- `orjson.dumps()` serializes `dataclasses.dataclass` and `uuid.UUID`
+- `orjson_pydantic.dumps()` serializes `dataclasses.dataclass` and `uuid.UUID`
 instances by default. The options `OPT_SERIALIZE_DATACLASS` and
 `OPT_SERIALIZE_UUID` can still be specified but have no effect.
 
@@ -379,8 +379,8 @@ directly to the returned `bytes` object.
 
 ### Added
 
-- `orjson.dumps()` pretty prints with an indentation of two spaces if
-`option=orjson.OPT_INDENT_2` is specified.
+- `orjson_pydantic.dumps()` pretty prints with an indentation of two spaces if
+`option=orjson_pydantic.OPT_INDENT_2` is specified.
 
 ## 2.5.2 - 2020-03-07
 
@@ -400,27 +400,27 @@ not depending on glibc 2.18.
 
 ### Added
 
-- `orjson.dumps()` serializes `dict` keys of type other than `str` if
-`option=orjson.OPT_NON_STR_KEYS` is specified.
+- `orjson_pydantic.dumps()` serializes `dict` keys of type other than `str` if
+`option=orjson_pydantic.OPT_NON_STR_KEYS` is specified.
 
 ## 2.4.0 - 2020-02-14
 
 ### Added
 
-- `orjson.dumps()` serializes `numpy.ndarray` instances if
-`option=orjson.OPT_SERIALIZE_NUMPY` is specified.
+- `orjson_pydantic.dumps()` serializes `numpy.ndarray` instances if
+`option=orjson_pydantic.OPT_SERIALIZE_NUMPY` is specified.
 
 ### Fixed
 
 - Fix `dataclasses.dataclass` attributes that are `dict` to be effected by
-`orjson.OPT_SORT_KEYS`.
+`orjson_pydantic.OPT_SORT_KEYS`.
 
 ## 2.3.0 - 2020-02-12
 
 ### Added
 
-- `orjson.dumps()` serializes `dict` instances sorted by keys, equivalent to
-`sort_keys` in other implementations, if `option=orjson.OPT_SORT_KEYS` is
+- `orjson_pydantic.dumps()` serializes `dict` instances sorted by keys, equivalent to
+`sort_keys` in other implementations, if `option=orjson_pydantic.OPT_SORT_KEYS` is
 specified.
 
 ### Changed
@@ -443,7 +443,7 @@ same type.
 
 ### Fixed
 
-- `orjson.loads()` rejects floats that do not have a digit following
+- `orjson_pydantic.loads()` rejects floats that do not have a digit following
 the decimal, e.g., `-2.`, `2.e-3`.
 
 ### Changed
@@ -454,8 +454,8 @@ the decimal, e.g., `-2.`, `2.e-3`.
 
 ### Added
 
-- `orjson.dumps()` serializes `uuid.UUID` instances if
-`option=orjson.OPT_SERIALIZE_UUID` is specified.
+- `orjson_pydantic.dumps()` serializes `uuid.UUID` instances if
+`option=orjson_pydantic.OPT_SERIALIZE_UUID` is specified.
 
 ### Changed
 
@@ -466,7 +466,7 @@ the decimal, e.g., `-2.`, `2.e-3`.
 
 ### Fixed
 
-- Specify a text signature for `orjson.loads()`.
+- Specify a text signature for `orjson_pydantic.loads()`.
 
 ### Changed
 
@@ -482,7 +482,7 @@ the decimal, e.g., `-2.`, `2.e-3`.
 
 ### Changed
 
-- The recursion limit of `default` on `orjson.dumps()` has been increased from
+- The recursion limit of `default` on `orjson_pydantic.dumps()` has been increased from
 5 to 254.
 
 ## 2.1.1 - 2019-10-29
@@ -495,14 +495,14 @@ the decimal, e.g., `-2.`, `2.e-3`.
 
 ### Added
 
-- `orjson.dumps()` serializes `dataclasses.dataclass` instances if
-`option=orjson.OPT_SERIALIZE_DATACLASS` is specified.
-- `orjson.dumps()` accepts `orjson.OPT_UTC_Z` to serialize UTC as "Z" instead
+- `orjson_pydantic.dumps()` serializes `dataclasses.dataclass` instances if
+`option=orjson_pydantic.OPT_SERIALIZE_DATACLASS` is specified.
+- `orjson_pydantic.dumps()` accepts `orjson_pydantic.OPT_UTC_Z` to serialize UTC as "Z" instead
 of "+00:00".
-- `orjson.dumps()` accepts `orjson.OPT_OMIT_MICROSECONDS` to not serialize
+- `orjson_pydantic.dumps()` accepts `orjson_pydantic.OPT_OMIT_MICROSECONDS` to not serialize
 the `microseconds` attribute of `datetime.datetime` and `datetime.time`
 instances.
-- `orjson.loads()` accepts `bytearray`.
+- `orjson_pydantic.loads()` accepts `bytearray`.
 
 ### Changed
 
@@ -548,7 +548,7 @@ by creating only one `str` object for repeated map keys.
 
 ### Fixed
 
-- `orjson.dumps()` raises `JSONEncodeError` on circular references.
+- `orjson_pydantic.dumps()` raises `JSONEncodeError` on circular references.
 
 ## 2.0.6 - 2019-05-11
 
@@ -568,14 +568,14 @@ unaffected.
 
 ### Changed
 
-- `orjson.dumps()` now serializes `datetime.datetime` objects without a
+- `orjson_pydantic.dumps()` now serializes `datetime.datetime` objects without a
 `tzinfo` rather than raising `JSONEncodeError`.
 
 ## 2.0.3 - 2019-03-23
 
 ### Changed
 
-- `orjson.loads()` uses SSE2 to validate `bytes` input.
+- `orjson_pydantic.loads()` uses SSE2 to validate `bytes` input.
 
 ## 2.0.2 - 2019-03-12
 
@@ -593,19 +593,19 @@ unaffected.
 
 ### Added
 
-- `orjson.dumps()` accepts a `default` callable to serialize arbitrary
+- `orjson_pydantic.dumps()` accepts a `default` callable to serialize arbitrary
 types.
-- `orjson.dumps()` accepts `datetime.datetime`, `datetime.date`,
+- `orjson_pydantic.dumps()` accepts `datetime.datetime`, `datetime.date`,
 and `datetime.time`. Each is serialized to an RFC 3339 string.
-- `orjson.dumps(..., option=orjson.OPT_NAIVE_UTC)` allows serializing
+- `orjson_pydantic.dumps(..., option=orjson_pydantic.OPT_NAIVE_UTC)` allows serializing
 `datetime.datetime` objects that do not have a timezone set as UTC.
-- `orjson.dumps(..., option=orjson.OPT_STRICT_INTEGER)` available to
+- `orjson_pydantic.dumps(..., option=orjson_pydantic.OPT_STRICT_INTEGER)` available to
 raise an error on integer values outside the 53-bit range of all JSON
 implementations.
 
 ### Changed
 
-- `orjson.dumps()` no longer accepts `bytes`.
+- `orjson_pydantic.dumps()` no longer accepts `bytes`.
 
 ## 1.3.1 - 2019-01-03
 
@@ -651,5 +651,5 @@ implementations.
 
 ### Added
 
-- `orjson.dumps()` function.
-- `orjson.loads()` function.
+- `orjson_pydantic.dumps()` function.
+- `orjson_pydantic.loads()` function.

@@ -4,7 +4,7 @@ import datetime
 import json
 import unittest
 
-import orjson
+import orjson_pydantic
 
 from .util import read_fixture_obj
 
@@ -16,21 +16,21 @@ class IndentedOutputTests(unittest.TestCase):
         """
         obj = {"a": "b", "c": {"d": True}, "e": [1, 2]}
         self.assertEqual(
-            orjson.dumps(obj, option=orjson.OPT_INDENT_2),
+            orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_INDENT_2),
             json.dumps(obj, indent=2).encode("utf-8"),
         )
 
     def test_sort(self):
         obj = {"b": 1, "a": 2}
         self.assertEqual(
-            orjson.dumps(obj, option=orjson.OPT_INDENT_2 | orjson.OPT_SORT_KEYS),
+            orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_INDENT_2 | orjson_pydantic.OPT_SORT_KEYS),
             b'{\n  "a": 2,\n  "b": 1\n}',
         )
 
     def test_non_str(self):
         obj = {1: 1, "a": 2}
         self.assertEqual(
-            orjson.dumps(obj, option=orjson.OPT_INDENT_2 | orjson.OPT_NON_STR_KEYS),
+            orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_INDENT_2 | orjson_pydantic.OPT_NON_STR_KEYS),
             b'{\n  "1": 1,\n  "a": 2\n}',
         )
 
@@ -41,12 +41,12 @@ class IndentedOutputTests(unittest.TestCase):
             "a": datetime.datetime(1970, 1, 1),
         }
         self.assertEqual(
-            orjson.dumps(
+            orjson_pydantic.dumps(
                 obj,
-                option=orjson.OPT_INDENT_2
-                | orjson.OPT_SORT_KEYS
-                | orjson.OPT_NON_STR_KEYS
-                | orjson.OPT_NAIVE_UTC,
+                option=orjson_pydantic.OPT_INDENT_2
+                | orjson_pydantic.OPT_SORT_KEYS
+                | orjson_pydantic.OPT_NON_STR_KEYS
+                | orjson_pydantic.OPT_NAIVE_UTC,
             ),
             b'{\n  "1": 1,\n  "a": "1970-01-01T00:00:00+00:00",\n  "b": true\n}',
         )
@@ -57,7 +57,7 @@ class IndentedOutputTests(unittest.TestCase):
         """
         obj = read_fixture_obj("twitter.json.xz")
         self.assertEqual(
-            orjson.dumps(obj, option=orjson.OPT_INDENT_2),
+            orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_INDENT_2),
             json.dumps(obj, indent=2, ensure_ascii=False).encode("utf-8"),
         )
 
@@ -67,7 +67,7 @@ class IndentedOutputTests(unittest.TestCase):
         """
         obj = read_fixture_obj("github.json.xz")
         self.assertEqual(
-            orjson.dumps(obj, option=orjson.OPT_INDENT_2),
+            orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_INDENT_2),
             json.dumps(obj, indent=2, ensure_ascii=False).encode("utf-8"),
         )
 
@@ -77,7 +77,7 @@ class IndentedOutputTests(unittest.TestCase):
         """
         obj = read_fixture_obj("canada.json.xz")
         self.assertEqual(
-            orjson.dumps(obj, option=orjson.OPT_INDENT_2),
+            orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_INDENT_2),
             json.dumps(obj, indent=2, ensure_ascii=False).encode("utf-8"),
         )
 
@@ -87,6 +87,6 @@ class IndentedOutputTests(unittest.TestCase):
         """
         obj = read_fixture_obj("citm_catalog.json.xz")
         self.assertEqual(
-            orjson.dumps(obj, option=orjson.OPT_INDENT_2),
+            orjson_pydantic.dumps(obj, option=orjson_pydantic.OPT_INDENT_2),
             json.dumps(obj, indent=2, ensure_ascii=False).encode("utf-8"),
         )

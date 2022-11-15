@@ -2,7 +2,7 @@
 
 import unittest
 
-import orjson
+import orjson_pydantic
 
 from .util import read_fixture_bytes
 
@@ -14,12 +14,12 @@ def _read_file(filename):
 class JSONTestSuiteTransformTests(unittest.TestCase):
     def _pass_transform(self, filename, reference=None):
         data = _read_file(filename)
-        self.assertEqual(orjson.dumps(orjson.loads(data)), reference or data)
+        self.assertEqual(orjson_pydantic.dumps(orjson_pydantic.loads(data)), reference or data)
 
     def _fail_transform(self, filename):
         data = _read_file(filename)
-        with self.assertRaises(orjson.JSONDecodeError):
-            orjson.loads(data)
+        with self.assertRaises(orjson_pydantic.JSONDecodeError):
+            orjson_pydantic.loads(data)
 
     def test_number_1(self):
         """
@@ -45,7 +45,7 @@ class JSONTestSuiteTransformTests(unittest.TestCase):
         """
         # cannot serialize due to range
         self.assertEqual(
-            orjson.loads(_read_file("number_10000000000000000999.json")),
+            orjson_pydantic.loads(_read_file("number_10000000000000000999.json")),
             [10000000000000000999],
         )
 

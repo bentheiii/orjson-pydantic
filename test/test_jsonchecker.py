@@ -5,7 +5,7 @@ Tests files from http://json.org/JSON_checker/
 
 import unittest
 
-import orjson
+import orjson_pydantic
 
 from .util import read_fixture_str
 
@@ -13,13 +13,13 @@ PATTERN_1 = '["JSON Test Pattern pass1",{"object with 1 member":["array with 1 e
 
 
 class JsonCheckerTests(unittest.TestCase):
-    def _run_fail_json(self, filename, exc=orjson.JSONDecodeError):
+    def _run_fail_json(self, filename, exc=orjson_pydantic.JSONDecodeError):
         data = read_fixture_str(filename, "jsonchecker")
-        self.assertRaises(exc, orjson.loads, data)
+        self.assertRaises(exc, orjson_pydantic.loads, data)
 
     def _run_pass_json(self, filename, match=""):
         data = read_fixture_str(filename, "jsonchecker")
-        self.assertEqual(orjson.dumps(orjson.loads(data)), match)
+        self.assertEqual(orjson_pydantic.dumps(orjson_pydantic.loads(data)), match)
 
     def test_fail01(self):
         """
@@ -34,7 +34,7 @@ class JsonCheckerTests(unittest.TestCase):
         """
         fail02.json
         """
-        self._run_fail_json("fail02.json", orjson.JSONDecodeError)  # EOF
+        self._run_fail_json("fail02.json", orjson_pydantic.JSONDecodeError)  # EOF
 
     def test_fail03(self):
         """
@@ -216,7 +216,7 @@ class JsonCheckerTests(unittest.TestCase):
         """
         fail32.json
         """
-        self._run_fail_json("fail32.json", orjson.JSONDecodeError)  # EOF
+        self._run_fail_json("fail32.json", orjson_pydantic.JSONDecodeError)  # EOF
 
     def test_fail33(self):
         """

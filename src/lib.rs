@@ -45,10 +45,10 @@ macro_rules! opt {
 #[no_mangle]
 #[cold]
 #[cfg_attr(feature = "unstable-simd", optimize(size))]
-pub unsafe extern "C" fn PyInit_orjson() -> *mut PyObject {
+pub unsafe extern "C" fn PyInit_orjson_pydantic() -> *mut PyObject {
     let init = PyModuleDef {
         m_base: PyModuleDef_HEAD_INIT,
-        m_name: "orjson\0".as_ptr() as *const c_char,
+        m_name: "orjson_pydantic\0".as_ptr() as *const c_char,
         m_doc: std::ptr::null(),
         m_size: 0,
         m_methods: std::ptr::null_mut(),
@@ -99,7 +99,7 @@ pub unsafe extern "C" fn PyInit_orjson() -> *mut PyObject {
             PyCFunction_NewEx(
                 Box::into_raw(Box::new(wrapped_dumps)),
                 std::ptr::null_mut(),
-                PyUnicode_InternFromString("orjson\0".as_ptr() as *const c_char),
+                PyUnicode_InternFromString("orjson_pydantic\0".as_ptr() as *const c_char),
             ),
         )
     };
@@ -118,7 +118,7 @@ pub unsafe extern "C" fn PyInit_orjson() -> *mut PyObject {
             PyCFunction_NewEx(
                 Box::into_raw(Box::new(wrapped_loads)),
                 std::ptr::null_mut(),
-                PyUnicode_InternFromString("orjson\0".as_ptr() as *const c_char),
+                PyUnicode_InternFromString("orjson_pydantic\0".as_ptr() as *const c_char),
             ),
         )
     };

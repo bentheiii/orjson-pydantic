@@ -8,7 +8,7 @@ import os
 from timeit import timeit
 from typing import List
 
-import orjson
+import orjson_pydantic
 import rapidjson
 import simplejson
 import ujson
@@ -37,7 +37,7 @@ objects_as_dataclass = [
 
 objects_as_dict = [dataclasses.asdict(each) for each in objects_as_dataclass]
 
-output_in_kib = len(orjson.dumps(objects_as_dict)) / 1024
+output_in_kib = len(orjson_pydantic.dumps(objects_as_dict)) / 1024
 
 print(f"{output_in_kib:,.0f}KiB output (orjson)")
 
@@ -100,10 +100,10 @@ for lib_name in LIBRARIES:
             number=ITERATIONS,
         )
     elif lib_name == "orjson":
-        as_dict = timeit(lambda: orjson.dumps(objects_as_dict), number=ITERATIONS)
+        as_dict = timeit(lambda: orjson_pydantic.dumps(objects_as_dict), number=ITERATIONS)
         as_dataclass = timeit(
-            lambda: orjson.dumps(
-                objects_as_dataclass, None, orjson.OPT_SERIALIZE_DATACLASS
+            lambda: orjson_pydantic.dumps(
+                objects_as_dataclass, None, orjson_pydantic.OPT_SERIALIZE_DATACLASS
             ),
             number=ITERATIONS,
         )

@@ -1,4 +1,4 @@
-import orjson
+import orjson_pydantic
 import pytest
 
 
@@ -7,5 +7,5 @@ import pytest
     b'"\xc8',
 ])
 def test_invalid(input):
-    with pytest.raises(orjson.JSONDecodeError):
-        orjson.loads(input)
+    with pytest.raises(orjson_pydantic.JSONDecodeError):
+        orjson_pydantic.loads(input)

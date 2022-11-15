@@ -2,7 +2,7 @@
 
 import unittest
 
-import orjson
+import orjson_pydantic
 
 from .util import read_fixture_obj
 
@@ -12,7 +12,7 @@ class AppendNewlineTests(unittest.TestCase):
         """
         dumps() OPT_APPEND_NEWLINE
         """
-        self.assertEqual(orjson.dumps([], option=orjson.OPT_APPEND_NEWLINE), b"[]\n")
+        self.assertEqual(orjson_pydantic.dumps([], option=orjson_pydantic.OPT_APPEND_NEWLINE), b"[]\n")
 
     def test_twitter_newline(self):
         """
@@ -20,7 +20,7 @@ class AppendNewlineTests(unittest.TestCase):
         """
         val = read_fixture_obj("twitter.json.xz")
         self.assertEqual(
-            orjson.loads(orjson.dumps(val, option=orjson.OPT_APPEND_NEWLINE)), val
+            orjson_pydantic.loads(orjson_pydantic.dumps(val, option=orjson_pydantic.OPT_APPEND_NEWLINE)), val
         )
 
     def test_canada(self):
@@ -29,7 +29,7 @@ class AppendNewlineTests(unittest.TestCase):
         """
         val = read_fixture_obj("canada.json.xz")
         self.assertEqual(
-            orjson.loads(orjson.dumps(val, option=orjson.OPT_APPEND_NEWLINE)), val
+            orjson_pydantic.loads(orjson_pydantic.dumps(val, option=orjson_pydantic.OPT_APPEND_NEWLINE)), val
         )
 
     def test_citm_catalog_newline(self):
@@ -38,7 +38,7 @@ class AppendNewlineTests(unittest.TestCase):
         """
         val = read_fixture_obj("citm_catalog.json.xz")
         self.assertEqual(
-            orjson.loads(orjson.dumps(val, option=orjson.OPT_APPEND_NEWLINE)), val
+            orjson_pydantic.loads(orjson_pydantic.dumps(val, option=orjson_pydantic.OPT_APPEND_NEWLINE)), val
         )
 
     def test_github_newline(self):
@@ -47,5 +47,5 @@ class AppendNewlineTests(unittest.TestCase):
         """
         val = read_fixture_obj("github.json.xz")
         self.assertEqual(
-            orjson.loads(orjson.dumps(val, option=orjson.OPT_APPEND_NEWLINE)), val
+            orjson_pydantic.loads(orjson_pydantic.dumps(val, option=orjson_pydantic.OPT_APPEND_NEWLINE)), val
         )

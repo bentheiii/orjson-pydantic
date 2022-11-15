@@ -9,7 +9,7 @@ import random
 from time import mktime
 from timeit import timeit
 
-import orjson
+import orjson_pydantic
 import rapidjson
 import simplejson
 import ujson
@@ -28,7 +28,7 @@ for year in range(1920, 2020):
     random.shuffle(array)
     data_as_obj.append(dict(array))
 
-data_as_str = orjson.loads(orjson.dumps(data_as_obj, option=orjson.OPT_NON_STR_KEYS))
+data_as_str = orjson_pydantic.loads(orjson_pydantic.dumps(data_as_obj, option=orjson_pydantic.OPT_NON_STR_KEYS))
 
 headers = ("Library", "str keys (ms)", "int keys (ms)", "int keys sorted (ms)")
 
@@ -37,7 +37,7 @@ LIBRARIES = ("orjson", "ujson", "rapidjson", "simplejson", "json")
 ITERATIONS = 500
 
 
-output_in_kib = len(orjson.dumps(data_as_str)) / 1024
+output_in_kib = len(orjson_pydantic.dumps(data_as_str)) / 1024
 
 print(f"{output_in_kib:,.0f}KiB output (orjson)")
 
@@ -49,7 +49,7 @@ def per_iter_latency(val):
 
 
 def test_correctness(serialized):
-    return orjson.loads(serialized) == data_as_str
+    return orjson_pydantic.loads(serialized) == data_as_str
 
 
 table = []
@@ -105,22 +105,22 @@ for lib_name in LIBRARIES:
         correct = False
     elif lib_name == "orjson":
         time_as_str = timeit(
-            lambda: orjson.dumps(data_as_str, None, orjson.OPT_NON_STR_KEYS),
+            lambda: orjson_pydantic.dumps(data_as_str, None, orjson_pydantic.OPT_NON_STR_KEYS),
             number=ITERATIONS,
         )
         time_as_obj = timeit(
-            lambda: orjson.dumps(data_as_obj, None, orjson.OPT_NON_STR_KEYS),
+            lambda: orjson_pydantic.dumps(data_as_obj, None, orjson_pydantic.OPT_NON_STR_KEYS),
             number=ITERATIONS,
         )
         time_as_obj_sorted = timeit(
-            lambda: orjson.dumps(
-                data_as_obj, None, orjson.OPT_NON_STR_KEYS | orjson.OPT_SORT_KEYS
+            lambda: orjson_pydantic.dumps(
+                data_as_obj, None, orjson_pydantic.OPT_NON_STR_KEYS | orjson_pydantic.OPT_SORT_KEYS
             ),
             number=ITERATIONS,
         )
         correct = test_correctness(
-            orjson.dumps(
-                data_as_obj, None, orjson.OPT_NON_STR_KEYS | orjson.OPT_SORT_KEYS
+            orjson_pydantic.dumps(
+                data_as_obj, None, orjson_pydantic.OPT_NON_STR_KEYS | orjson_pydantic.OPT_SORT_KEYS
             )
         )
     else:

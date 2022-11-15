@@ -14,7 +14,7 @@ import simplejson
 import ujson
 from tabulate import tabulate
 
-import orjson
+import orjson_pydantic
 
 os.sched_setaffinity(os.getpid(), {0, 1})
 
@@ -28,7 +28,7 @@ def read_fixture_obj(filename):
         contents = lzma.decompress(path.read_bytes())
     else:
         contents = path.read_bytes()
-    return orjson.loads(contents)
+    return orjson_pydantic.loads(contents)
 
 
 filename = sys.argv[1] if len(sys.argv) >= 1 else ""
@@ -39,11 +39,11 @@ headers = ("Library", "compact (ms)", "pretty (ms)", "vs. orjson")
 
 LIBRARIES = ("orjson", "ujson", "rapidjson", "simplejson", "json")
 
-output_in_kib_compact = len(orjson.dumps(data)) / 1024
-output_in_kib_pretty = len(orjson.dumps(data, option=orjson.OPT_INDENT_2)) / 1024
+output_in_kib_compact = len(orjson_pydantic.dumps(data)) / 1024
+output_in_kib_pretty = len(orjson_pydantic.dumps(data, option=orjson_pydantic.OPT_INDENT_2)) / 1024
 
 # minimum 2s runtime for orjson compact
-ITERATIONS = int(2 / (timeit(lambda: orjson.dumps(data), number=20) / 20))
+ITERATIONS = int(2 / (timeit(lambda: orjson_pydantic.dumps(data), number=20) / 20))
 
 print(
     f"{output_in_kib_compact:,.0f}KiB compact, {output_in_kib_pretty:,.0f}KiB pretty, {ITERATIONS} iterations"
@@ -57,7 +57,7 @@ def per_iter_latency(val):
 
 
 def test_correctness(serialized):
-    return orjson.loads(serialized) == data
+    return orjson_pydantic.loads(serialized) == data
 
 
 table = []
@@ -98,12 +98,12 @@ for lib_name in LIBRARIES:
         time_pretty = None
         correct = False
     elif lib_name == "orjson":
-        time_compact = timeit(lambda: orjson.dumps(data), number=ITERATIONS)
+        time_compact = timeit(lambda: orjson_pydantic.dumps(data), number=ITERATIONS)
         time_pretty = timeit(
-            lambda: orjson.dumps(data, None, orjson.OPT_INDENT_2),
+            lambda: orjson_pydantic.dumps(data, None, orjson_pydantic.OPT_INDENT_2),
             number=ITERATIONS,
         )
-        correct = test_correctness(orjson.dumps(data, None, orjson.OPT_INDENT_2))
+        correct = test_correctness(orjson_pydantic.dumps(data, None, orjson_pydantic.OPT_INDENT_2))
         orjson_time_pretty = per_iter_latency(time_pretty)
     else:
         raise NotImplementedError
