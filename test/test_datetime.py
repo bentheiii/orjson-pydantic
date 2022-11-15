@@ -31,6 +31,11 @@ AMSTERDAM_1937_DATETIMES = (
     b'["1937-01-01T12:00:27.000087+00:00"]',  # tzinfo>=2022b
 )
 
+AMSTERDAM_1937_DATETIMES_WITH_Z = (
+    b'["1937-01-01T12:00:27.000087+00:20"]',
+    b'["1937-01-01T12:00:27.000087Z"]',
+)
+
 class DatetimeTests(unittest.TestCase):
     def test_datetime_naive(self):
         """
@@ -665,7 +670,7 @@ class DatetimeTests(unittest.TestCase):
                 ],
                 option=orjson_pydantic.OPT_UTC_Z,
             ),
-            AMSTERDAM_1937_DATETIMES,
+            AMSTERDAM_1937_DATETIMES_WITH_Z,
         )
 
     @pytest.mark.skipif(pendulum is None, reason="pendulum install broken on win")
