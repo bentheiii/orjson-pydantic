@@ -3,6 +3,6 @@
 from setuptools import setup
 
 setup(
-    name="orjson",
-    url="https://github.com/aviramha/orjson-pydantic",
+    name="orjson_pydantic",
+    url="https://github.com/bentheiii/orjson-pydantic",
 )
