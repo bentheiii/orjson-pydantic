@@ -463,7 +463,7 @@ class DatetimeTests(unittest.TestCase):
 
         https://tools.ietf.org/html/rfc3339#section-5.8
         """
-        self.assertEqual(
+        self.assertIn(
             orjson_pydantic.dumps(
                 [
                     datetime.datetime(
@@ -478,7 +478,7 @@ class DatetimeTests(unittest.TestCase):
                     )
                 ]
             ),
-            b'["1937-01-01T12:00:27.000087+00:20"]',
+            AMSTERDAM_1937_DATETIMES,
         )
 
     @unittest.skipIf(
@@ -491,7 +491,7 @@ class DatetimeTests(unittest.TestCase):
 
         https://tools.ietf.org/html/rfc3339#section-5.8
         """
-        self.assertEqual(
+        self.assertIn(
             orjson_pydantic.dumps(
                 [
                     datetime.datetime(
@@ -506,7 +506,7 @@ class DatetimeTests(unittest.TestCase):
                     )
                 ]
             ),
-            b'["1937-01-01T12:00:27.000087+00:20"]',
+            AMSTERDAM_1937_DATETIMES,
         )
 
     @pytest.mark.skipif(pytz is None, reason="pytz optional")
@@ -540,7 +540,7 @@ class DatetimeTests(unittest.TestCase):
 
         https://tools.ietf.org/html/rfc3339#section-5.8
         """
-        self.assertEqual(
+        self.assertIn(
             orjson_pydantic.dumps(
                 [
                     datetime.datetime(
@@ -548,7 +548,7 @@ class DatetimeTests(unittest.TestCase):
                     )
                 ]
             ),
-            b'["1937-01-01T12:00:27.000087+00:20"]',
+            AMSTERDAM_1937_DATETIMES,
         )
 
     def test_datetime_microsecond_max(self):
@@ -656,7 +656,7 @@ class DatetimeTests(unittest.TestCase):
             ),
             b'["2000-01-01T00:00:00.000001Z"]',
         )
-        self.assertEqual(
+        self.assertIn(
             orjson_pydantic.dumps(
                 [
                     datetime.datetime(
@@ -665,7 +665,7 @@ class DatetimeTests(unittest.TestCase):
                 ],
                 option=orjson_pydantic.OPT_UTC_Z,
             ),
-            b'["1937-01-01T12:00:27.000087+00:20"]',
+            AMSTERDAM_1937_DATETIMES,
         )
 
     @pytest.mark.skipif(pendulum is None, reason="pendulum install broken on win")
