@@ -29,7 +29,7 @@ jobs:
           override: true
       - run: yum install -y libffi libffi-devel openssl openssl-devel
       - run: /opt/python/${{ matrix.python-path }}/bin/python -m venv .venv
-      - run: .venv/bin/pip install -U pip wheel
+      - run: .venv/bin/python -m pip install -U pip wheel
       - run: .venv/bin/pip install -U twine maturin
       - run: .venv/bin/pip install -r requirements.txt
       - run: .venv/bin/maturin build --release --strip --manylinux 2014 -i /opt/python/${{ matrix.python-path }}/bin/python --target x86_64-unknown-linux-gnu
