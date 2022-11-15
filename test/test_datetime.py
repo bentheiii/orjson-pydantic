@@ -26,6 +26,10 @@ except ImportError:
 if sys.version_info >= (3, 9):
     import zoneinfo
 
+AMSTERDAM_1937_DATETIMES = (
+    b'["1937-01-01T12:00:27.000087+00:20"]',  # tzinfo<2022b and an example in RFC 3339
+    b'["1937-01-01T12:00:27.000087+00:00"]',  # tzinfo>=2022b
+)
 
 class DatetimeTests(unittest.TestCase):
     def test_datetime_naive(self):
@@ -512,7 +516,7 @@ class DatetimeTests(unittest.TestCase):
 
         https://tools.ietf.org/html/rfc3339#section-5.8
         """
-        self.assertEqual(
+        self.assertIn(
             orjson_pydantic.dumps(
                 [
                     datetime.datetime(
@@ -527,7 +531,7 @@ class DatetimeTests(unittest.TestCase):
                     )
                 ]
             ),
-            b'["1937-01-01T12:00:27.000087+00:20"]',
+            AMSTERDAM_1937_DATETIMES,
         )
 
     def test_datetime_partial_second_dateutil(self):

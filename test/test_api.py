@@ -58,7 +58,7 @@ class ApiTests(unittest.TestCase):
         """
         __version__
         """
-        self.assertRegex(orjson.__version__, r"^\d+\.\d+(\.\d+)?$")
+        self.assertRegex(orjson_pydantic.__version__, r"^\d+\.\d+(\.\d+)?$")
 
     def test_valueerror(self):
         """
@@ -182,13 +182,13 @@ class ApiTests(unittest.TestCase):
         """
         orjson_pydantic.dumps.__module__ is a str
         """
-        self.assertEqual(orjson_pydantic.dumps.__module__, "orjson")
+        self.assertEqual(orjson_pydantic.dumps.__module__, "orjson_pydantic")
 
     def test_loads_module_str(self):
         """
         orjson_pydantic.loads.__module__ is a str
         """
-        self.assertEqual(orjson_pydantic.loads.__module__, "orjson")
+        self.assertEqual(orjson_pydantic.loads.__module__, "orjson_pydantic")
 
     def test_bytes_buffer(self):
         """
