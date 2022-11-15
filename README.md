@@ -1178,7 +1178,7 @@ This is an example for x86_64 on the Rust nightly channel:
 
 ```sh
 export RUSTFLAGS="-C target-cpu=k8"
-maturin build --no-sdist --release --strip --cargo-extra-args="--features=unstable-simd"
+maturin build --release --strip --cargo-extra-args="--features=unstable-simd"
 ```
 
 To build on the stable channel, do not specify `--features=unstable-simd`.
